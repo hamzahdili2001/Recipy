@@ -8,31 +8,46 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('description', models.CharField(max_length=255)),
-                ('category', models.CharField(max_length=255)),
-                ('title', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("description", models.CharField(max_length=255)),
+                ("category", models.CharField(max_length=255)),
+                ("title", models.CharField(max_length=50)),
             ],
             options={
-                'db_table': 'recipies',
+                "db_table": "recipies",
             },
         ),
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('fullname', models.CharField(max_length=255)),
-                ('username', models.CharField(max_length=50)),
-                ('mail', models.EmailField(max_length=254)),
-                ('password', models.TextField()),
-                ('recipes', models.ManyToManyField(to='accounts.recipe')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                ("fullname", models.CharField(max_length=255)),
+                ("username", models.CharField(max_length=50)),
+                ("mail", models.EmailField(max_length=254)),
+                ("password", models.TextField()),
+                ("recipes", models.ManyToManyField(to="accounts.recipe")),
             ],
         ),
     ]
