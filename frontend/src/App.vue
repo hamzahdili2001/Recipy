@@ -1,13 +1,13 @@
+<script setup>
+import HomeView from './Views/HomeView.vue';
+</script>
+
 <template>
   <v-app>
-    <v-main>
-      <HelloWorld />
-    </v-main>
-
-    <AppFooter />
+    <HomeView />
   </v-app>
 </template>
 
-<script setup>
-  //
-</script>
+<style>
+@import "@/assets/styles/main.css";
+</style>
