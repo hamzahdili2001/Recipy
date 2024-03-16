@@ -2,6 +2,7 @@
 This module is about the serializers of the models
 https://www.django-rest-framework.org/tutorial/1-serialization/
 """
+
 from accounts.models import User, Recipe
 from typing import Dict
 from rest_framework import serializers
