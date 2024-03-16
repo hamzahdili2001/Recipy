@@ -1,10 +1,10 @@
 <script setup>
-import AppNavigationBar from "@/components/AppNavigationBar.vue";
+import HomeView from './Views/HomeView.vue';
 </script>
 
 <template>
   <v-app>
-    <AppNavigationBar />
+    <HomeView />
   </v-app>
 </template>
 
