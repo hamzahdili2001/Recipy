@@ -3,9 +3,7 @@ import AppNavigationBar from "@/components/AppNavigationBar.vue";
 </script>
 
 <template>
-  <v-app
-    class="bg-white"
-  >
+  <v-app>
     <AppNavigationBar />
   </v-app>
 </template>
@@ -13,4 +11,3 @@ import AppNavigationBar from "@/components/AppNavigationBar.vue";
 <style>
 @import "@/assets/styles/main.css";
 </style>
-
