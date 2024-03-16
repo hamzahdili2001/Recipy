@@ -4,3 +4,4 @@ djangorestframework==3.14.0
 pytz==2024.1
 sqlparse==0.4.4
 typing_extensions==4.10.0
+mysqlclient==2.2.4
