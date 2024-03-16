@@ -23,5 +23,6 @@ class User(models.Model):
     username = models.CharField(max_length=50)
     mail = models.EmailField()
     password = models.TextField()
+    profile = models.ImageField(upload_to="uploads/", default=None)
     # relationships
     recipes = models.ManyToManyField(Recipe)
