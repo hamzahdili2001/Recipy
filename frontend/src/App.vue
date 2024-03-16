@@ -1,13 +1,16 @@
-<template>
-  <v-app>
-    <v-main>
-      <HelloWorld />
-    </v-main>
+<script setup>
+import AppNavigationBar from "@/components/AppNavigationBar.vue";
+</script>
 
-    <AppFooter />
+<template>
+  <v-app
+    class="bg-white"
+  >
+    <AppNavigationBar />
   </v-app>
 </template>
 
-<script setup>
-  //
-</script>
+<style>
+@import "@/assets/styles/main.css";
+</style>
+
