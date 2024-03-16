@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles"
+    "django.contrib.staticfiles",
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -110,6 +111,12 @@ AUTH_PASSWORD_VALIDATORS = [
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 
 # Internationalization

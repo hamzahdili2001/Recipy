@@ -1,3 +1,4 @@
 make_migrations: python manage.py makemigrations <APP>
 show_migrate: python manage.py sqlmigrate <APP> <NUMBER>
 migrate: python manage.py migrate
+start_app: python manage.py startapp <APP>
