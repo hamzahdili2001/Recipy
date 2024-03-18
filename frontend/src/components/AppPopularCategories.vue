@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-10 mb-10 mx-15">
+    <div class="mt-10 mx-15">
         <h1>Popular Categories</h1>
         <div class="d-flex justify-center align-center flex-wrap mt-8">
             <v-col style="min-width: 200px;" v-for="card in cards" :key="card" cols="12" sm="2">
