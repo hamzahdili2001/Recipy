@@ -53,7 +53,7 @@ class TheUserManager(UserManager):
 
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        extra_fields.setdefault("last_login", datetime.now().strftime())
+        extra_fields.setdefault("last_login", datetime.now())
         return self._create_user(
             username, first_name, last_name, email, password, **extra_fields
         )
