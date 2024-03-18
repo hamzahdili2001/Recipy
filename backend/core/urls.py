@@ -21,7 +21,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path("", accounts.views.status),
-    path("api/user/register", accounts.views.singup),
+    path("api/user/register", accounts.views.signup),
     path("admin/", admin.site.urls),
     path("api/auth/", include("rest_framework.urls")),
 ]

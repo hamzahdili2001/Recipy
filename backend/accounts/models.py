@@ -1,10 +1,14 @@
 """
 This module is about the models of the app accounts
 """
-
 import uuid
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
+
+
+def upload_to(instance, filename):
+    return '/'.join(['images', str(instance.user.username), filename])
 
 
 class Recipe(models.Model):
@@ -49,6 +53,7 @@ class TheUserManager(UserManager):
 
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
+        extra_fields.setdefault("last_login", datetime.now())
         return self._create_user(
             username, first_name, last_name, email, password, **extra_fields
         )
@@ -61,7 +66,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=150)
     last_name = models.CharField(max_length=150)
     username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     objects = TheUserManager()
 
@@ -73,7 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class UserProfile(models.Model):
     """User Profile"""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    picture = models.ImageField(upload_to="uploads/", blank=True, null=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, primary_key=True)
+    picture = models.ImageField(upload_to=upload_to, blank=True, null=True)
     # relationships
     recipes = models.ManyToManyField(Recipe, blank=True)
