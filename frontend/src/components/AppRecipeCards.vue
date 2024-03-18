@@ -2,9 +2,9 @@
 
     <div class="mt-10 mb-10 mx-15">
         <h1>Hand-Picked Recipes</h1>
-        <div class="d-flex justify-space-between align-center flex-wrap mt-8">
-            <div v-for="card of cardsInfo" :key="card">
-                <v-card :loading="loading" class="mx-auto my-7" max-width="430">
+        <div class="d-flex justify-center ga-10 align-center flex-wrap mt-8">
+            <v-col v-for="card of cardsInfo" :key="card" class="pa-0">
+                <v-card :loading="loading" class="mx-auto my-2" width="100%">
                     <template v-slot:loader="{ isActive }">
                         <v-progress-linear :active="isActive" color="deep-purple" height="4"
                             indeterminate></v-progress-linear>
@@ -63,9 +63,9 @@
                         </v-btn>
                     </v-card-actions>
                 </v-card>
-            </div>
+            </v-col>
         </div>
-        <div class="d-flex justify-center mt-4">
+        <div class="d-flex justify-center mt-8">
             <v-btn style="border: 2px solid #000;" class="rounded-0 text-center" elevation="0">Load More</v-btn>
         </div>
     </div>
