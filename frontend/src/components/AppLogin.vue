@@ -1,12 +1,9 @@
 <template>
     <div class="text-center">
-        <v-btn color="error" @click="overlay = !overlay">
-            Show Overlay
-        </v-btn>
-        <v-overlay v-model="overlay" class="d-flex justify-center align-center">
-            <v-btn @click="overlay = false" icon="mdi-close" variant="plain" text
+        <v-overlay v-model="appStore.overlay" class="d-flex justify-center align-center">
+            <v-btn @click="appStore.overlay = false" icon="mdi-close" variant="plain" text
                 class="app-login-close-icon text-white"></v-btn>
-            <div style="width: 450px; max-width: 500px; min-width: 320px;" v-show="LoginRegister">
+            <div style="width: 450px; max-width: 500px; min-width: 320px;" v-show="appStore.LoginRegister">
                 <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
                     <h3 class="mx-auto mb-8 font-weight-medium text-center" max-width="100%"
                         style="font-family: 'Smooch', cursive; font-size: 50px; color: #000000;">Recipy
@@ -43,7 +40,7 @@
                     </v-btn>
 
                     <v-card-text class="text-center">
-                        <a class="text-blue text-decoration-none cursor-pointer" @click="LoginRegister = false"
+                        <a class="text-blue text-decoration-none cursor-pointer" @click="appStore.LoginRegister = false"
                             rel="noopener noreferrer">
                             Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
                         </a>
@@ -51,7 +48,7 @@
                 </v-card>
             </div>
 
-            <div style="width: 450px; max-width: 500px; min-width: 320px;" v-show="!LoginRegister">
+            <div style="width: 450px; max-width: 500px; min-width: 320px;" v-show="!appStore.LoginRegister">
                 <v-card class="mx-auto pa-12 pb-8" elevation="8" max-width="448" rounded="lg">
 
                     <div class="text-subtitle-1 text-medium-emphasis">User Name</div>
@@ -85,7 +82,7 @@
                         Next
                     </v-btn>
                     <v-card-text class="text-center">
-                        <a class="text-blue text-decoration-none cursor-pointer" @click="LoginRegister = true"
+                        <a class="text-blue text-decoration-none cursor-pointer" @click="appStore.LoginRegister = true"
                             rel="noopener noreferrer">
                             <v-icon icon="mdi-chevron-left"></v-icon> Login
                         </a>
@@ -98,12 +95,17 @@
     </div>
 </template>
 <script>
+import { useAppLoginStore } from '@/store/home';
 export default {
+    setup() {
+        const appStore = useAppLoginStore();
+        return {
+            appStore,
+        }
+    },
     data: () => ({
-        overlay: false,
         visible: false,
-        LoginRegister: true,
-    }),
+    })
 }
 </script>
 
