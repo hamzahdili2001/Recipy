@@ -22,6 +22,11 @@ from django.urls import include, path
 urlpatterns = [
     path("", accounts.views.status),
     path("api/user/register", accounts.views.signup),
+    path("api/user/update_data/<str:id>", accounts.views.update_data),
+    path("api/user/update_email/<str:id>", accounts.views.update_email),
+    path("api/user/update_picture/<str:id>", accounts.views.update_picture),
+    path("api/user/update_password/<str:id>", accounts.views.update_password),
+    path("api/user/delete/<str:id>", accounts.views.delete_user),
     path("admin/", admin.site.urls),
     path("api/auth/", include("rest_framework.urls")),
 ]
