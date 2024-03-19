@@ -3,7 +3,7 @@
         class="d-flex mb-15 justify-center align-center text-center text-white">
         <div class="sub-container">
             <h1 class="mb-3">Deliciousness to your inbox</h1>
-            <p class="mb-3 w-50 mx-auto">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi obcaecati cum
+            <p class="mb-3 mx-auto">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi obcaecati cum
                 hic ab
                 corporis. Aut odio
                 maiores harum a molestias voluptate.</p>
@@ -21,9 +21,12 @@
     font-size: 3em;
 }
 
+
+
 .sub-container p {
     font-size: .90rem;
-    color: aliceblue
+    color: aliceblue;
+    width: 50% !important;
 }
 
 .sub-input {
@@ -41,5 +44,45 @@
     border-radius: 0 2px 2px 0;
     text-transform: uppercase;
     font-weight: 500;
+}
+
+@media (max-width: 500px) {
+    .sub-container h1 {
+        font-size: 2em;
+    }
+
+    .sub-container p {
+        width: 90% !important;
+    }
+}
+
+@media (max-width: 540px) {
+    .sub-container h1 {
+        font-size: 1.8em;
+    }
+
+    .sub-container p {
+        width: 95% !important;
+    }
+
+    .sub-input {
+        width: 95% !important;
+    }
+
+    .sub-btn {
+        width: 95% !important;
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 400px) {
+    .sub-container h1 {
+        font-size: 1.2em;
+    }
+
+    .sub-container p {
+        width: 95% !important;
+    }
+
 }
 </style>
