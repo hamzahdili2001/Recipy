@@ -30,6 +30,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.Serializer):
     def create(self, validated_data: Dict[str, str]):
         """
-        Create and return a new `User` instance, given the validated data.
+        Create and return a new `Recipe` instance, given the validated data.
         """
         return Recipe.objects.create(**validated_data)
