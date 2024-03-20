@@ -1,6 +1,7 @@
 from django.http import Http404
 from rest_framework import status as st
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
+from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.request import Request
 from accounts.models import User, UserProfile
@@ -26,7 +27,8 @@ def signup(request: Request):
         response_data = {
             "id": user_instance.id,
             "username": user_instance.username,
-            "email": user_instance.email
+            "email": user_instance.email,
+            "profile": profile_serializer.data
         }
         return Response(response_data, status=st.HTTP_201_CREATED)
     else:
@@ -39,6 +41,7 @@ def signup(request: Request):
 
 
 @api_view(["PUT"])
+@parser_classes([JSONParser])
 def update_data(request, id: str):
     try:
         user = User.objects.get(id=id)
@@ -60,6 +63,7 @@ def update_data(request, id: str):
 
 
 @api_view(["PUT"])
+@parser_classes([JSONParser])
 def update_email(request: Request, id: str):
     try:
         user = User.objects.get(id=id)
@@ -79,12 +83,53 @@ def update_email(request: Request, id: str):
 
 
 @api_view(["PUT"])
+@parser_classes([JSONParser])
 def update_password(request: Request, id: str):
-    pass
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+
+    data = {
+        "password0": request.data.get("password0"),
+        "password1": request.data.get("password1")
+    }
+
+    if not user.check_password(data.get("password0")):
+        return Response({"error": "Old password is invalid"}, status=st.HTTP_400_BAD_REQUEST)
+    elif not data.get("password1"):
+        return Response({"error": "New password cannot be empty"}, status=st.HTTP_400_BAD_REQUEST)
+    elif data.get("password0") == data.get("password1"):
+        return Response({"error": "Password are the same"}, status=st.HTTP_400_BAD_REQUEST)
+    else:
+        setattr(user, "password", data.get("password1"))
+    User.set_password(user, user.password)
+    user.save()
+    return Response({"message": "ok"})
+
 
 @api_view(["PUT"])
+@parser_classes([MultiPartParser])
 def update_picture(request: Request, id: str):
-    pass
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+
+    profile_serializer = UserProfileSerializer(data=request.data)
+    valid_profile_data = profile_serializer.is_valid()
+    if valid_profile_data:
+        user_profile = UserProfile.objects.filter(user=user).get()
+        if user_profile.picture:
+            user_profile.picture.delete()
+        user_profile.picture = request.data.get("picture")
+        user_profile.save()
+        return Response({"message": "ok"})
+    else:
+        errors = {}
+        if profile_serializer.errors:
+            errors.update(profile_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["DELETE"])
