@@ -15,7 +15,7 @@
         <v-btn icon>
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
-        <v-menu v-model="menu" :close-on-content-click="false" location="bottom">
+        <v-menu v-model="menu" :close-on-content-click="false" location="bottom" v-if="loggedIn">
           <template v-slot:activator="{ props }">
             <v-avatar class="ml-3 cursor-pointer" v-bind="props">
               <v-img :width="100"
@@ -49,6 +49,7 @@
             </v-card-actions>
           </v-card>
         </v-menu>
+        <v-btn icon="mdi-login-variant" v-else @click.stop="appStore.overlay = true"></v-btn>
       </div>
     </v-toolbar>
   </v-card>
@@ -67,7 +68,30 @@
     <v-list-item class="pa-4" link title="About"></v-list-item>
   </v-navigation-drawer>
 </template>
-
+<script>
+import { useAppLoginStore } from '@/store/home';
+export default {
+  setup() {
+    const appStore = useAppLoginStore();
+    return {
+      appStore,
+    }
+  },
+  data: () => ({
+    drawer: false,
+    fav: true,
+    menu: false,
+    message: false,
+    hints: true,
+    loggedIn: false,
+  }),
+  watch: {
+    group() {
+      this.drawer = false
+    },
+  },
+}
+</script>
 <style>
 .title {
   height: 80px;
@@ -101,20 +125,3 @@
   }
 }
 </style>
-
-<script>
-export default {
-  data: () => ({
-    drawer: false,
-    fav: true,
-    menu: false,
-    message: false,
-    hints: true,
-  }),
-  watch: {
-    group() {
-      this.drawer = false
-    },
-  },
-}
-</script>
