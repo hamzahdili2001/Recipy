@@ -1,6 +1,6 @@
 <template>
-    <div style="height: 600px; background-color: #FDBF60;"
-        class="d-flex mb-15 justify-center align-center text-center text-white">
+    <div style="height: 600px;" class="d-flex mb-15 justify-center align-center text-center text-white bg-orange-lighten-2
+">
         <div class="sub-container">
             <h1 class="mb-3">Deliciousness to your inbox</h1>
             <p class="mb-3 mx-auto">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi obcaecati cum
