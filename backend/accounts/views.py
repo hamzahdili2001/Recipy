@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import status as st
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -35,3 +36,62 @@ def signup(request: Request):
         if profile_serializer.errors:
             errors.update(profile_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PUT"])
+def update_data(request, id: str):
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+
+    data = {
+        "first_name": request.data.get("first_name"),
+        "last_name": request.data.get("last_name"),
+        "username": request.data.get("username")
+    }
+
+    for key, value in data.items():
+        if value is not None:
+            setattr(user, key, value)
+
+    user.save()
+    return Response({"message": "ok"})
+
+
+@api_view(["PUT"])
+def update_email(request: Request, id: str):
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+
+    data = {
+        "email": request.data.get("email")
+    }
+
+    for key, value in data.items():
+        if value is not None:
+            setattr(user, key, value)
+
+    user.save()
+    return Response({"message": "ok"})
+
+
+@api_view(["PUT"])
+def update_password(request: Request, id: str):
+    pass
+
+@api_view(["PUT"])
+def update_picture(request: Request, id: str):
+    pass
+
+
+@api_view(["DELETE"])
+def delete_user(request: Request, id: str):
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    user.delete()
+    return Response({"message": "ok"})
