@@ -4,6 +4,7 @@ import ProfileView from "@/Views/ProfileView.vue";
 import UserProfilePosts from "@/components/UserProfilePosts.vue";
 import UserProfileEdit from "@/components/UserProfileEdit.vue";
 import { createWebHistory, createRouter } from "vue-router";
+import AppRecipeCardDetails from "@/components/AppRecipeCardDetails.vue";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -34,6 +35,11 @@ const router = createRouter({
 					component: UserProfileEdit
 				}
 			]
+		},
+		{
+			path: "/details/:id",
+			name: "recipe-details",
+			component: AppRecipeCardDetails
 		}
 	]
 });
