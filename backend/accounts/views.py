@@ -1,11 +1,17 @@
 from django.http import Http404
 from rest_framework import status as st
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.request import Request
 from accounts.models import User, UserProfile
-from accounts.serializers import UserSerializer, UserProfileSerializer
+from accounts.serializers import (
+    UserSerializer,
+    UserProfileSerializer,
+    LoginSerializer
+)
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 @api_view(["GET"])
@@ -140,3 +146,39 @@ def delete_user(request: Request, id: str):
         raise Http404("User does not exist")
     user.delete()
     return Response({"message": "ok"})
+
+
+@api_view(["POST"])
+@parser_classes([JSONParser])
+def login(request: Request):
+    """
+    Login a user from email/username and password through jwt tokens
+    Read more about jwt tokens here:
+    https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+    """
+    login_serializer = LoginSerializer(data=request.data)
+    valid = login_serializer.is_valid()
+    user = None
+    if valid:
+        user = User.objects.filter(
+            email=login_serializer.data.get("username")).first()
+        if not user:
+            user = User.objects.filter(
+                username=login_serializer.data.get("username")).first()
+        if user is not None and user.check_password(login_serializer.data.get("password")):
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "message": "ok",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh)
+                }
+            )
+        else:
+            errors = {"detail": "Invalid credentials"}
+            return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+    else:
+        errors = {}
+        if login_serializer.errors:
+            errors.update(login_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
