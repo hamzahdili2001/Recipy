@@ -5,12 +5,12 @@
       <h3 class=" fs-30 d-none-md font-weight-medium"
         style="font-family: 'Smooch', cursive; font-size: 30px; color: #000000;">Recipy
       </h3>
-      <v-nav-list class="d-none-md">
+      <v-list class="d-none-md">
         <v-btn>Home</v-btn>
         <v-btn>Recipes</v-btn>
         <v-btn>Categories</v-btn>
         <v-btn>About</v-btn>
-      </v-nav-list>
+      </v-list>
       <div>
         <v-btn icon>
           <v-icon>mdi-magnify</v-icon>

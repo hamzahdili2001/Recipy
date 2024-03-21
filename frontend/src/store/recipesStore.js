@@ -8,7 +8,8 @@ export const useRecipesStore = defineStore("recipes", {
 		selection: 1,
 		loadCount: 12,
 		recipes: [],
-		recipe: {}
+		recipe: {},
+		apiKey: "API_KEY"
 	}),
 	actions: {
 		async loadMoreRecipes() {
@@ -18,9 +19,8 @@ export const useRecipesStore = defineStore("recipes", {
 
 		async getRecipes() {
 			try {
-				const apiKey = "59c62aae8e5646c8806e6c95512dffca";
 				const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?number=${this
-					.loadCount}&addRecipeInformation=true&apiKey=${apiKey}`;
+					.loadCount}&addRecipeInformation=true&apiKey=${this.apiKey}`;
 				const response = await axios.get(apiUrl);
 				this.recipes = response.data.results;
 				console.log(this.recipes[0]);
@@ -31,10 +31,11 @@ export const useRecipesStore = defineStore("recipes", {
 
 		async getRecipeById(recipeId) {
 			try {
-				const apiKey = "59c62aae8e5646c8806e6c95512dffca";
-				const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}`;
+				const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${this
+					.apiKey}`;
 				const response = await axios.get(url);
 				this.recipe = response.data;
+				console.log(this.recipe);
 			} catch (error) {
 				console.error("Error:", error);
 			}
