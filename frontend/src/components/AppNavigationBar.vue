@@ -5,12 +5,12 @@
       <h3 class=" fs-30 d-none-md font-weight-medium"
         style="font-family: 'Smooch', cursive; font-size: 30px; color: #000000;">Recipy
       </h3>
-      <v-nav-list class="d-none-md">
+      <v-list class="d-none-md">
         <v-btn>Home</v-btn>
         <v-btn>Recipes</v-btn>
         <v-btn>Categories</v-btn>
         <v-btn>About</v-btn>
-      </v-nav-list>
+      </v-list>
       <div>
         <v-btn icon>
           <v-icon>mdi-magnify</v-icon>
@@ -19,13 +19,13 @@
           <template v-slot:activator="{ props }">
             <v-avatar class="ml-3 cursor-pointer" v-bind="props">
               <v-img :width="100"
-                src="https://media.licdn.com/dms/image/C4D03AQHi1VAvIqvgag/profile-displayphoto-shrink_800_800/0/1622817007783?e=1716422400&v=beta&t=SaXMCLfmC0aM5L6re85uvHgyNHmr_LrPR6WZ7SKp7vw"></v-img>
+                src="https://scontent.frba2-1.fna.fbcdn.net/v/t39.30808-6/406045656_1793154191108159_2378818591530544511_n.jpg?stp=dst-jpg_p526x296&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=eo32MBmbkeAAX-rFnR2&_nc_ht=scontent.frba2-1.fna&oh=00_AfDfrEHZZOWprhuom_tVp4Hwn3RUxQGDbjTlgL8AKIyOnQ&oe=6600297F"></v-img>
             </v-avatar>
           </template>
           <v-card min-width="300" class="mt-2 mr-4 bg-white">
             <v-list>
               <v-list-item
-                prepend-avatar="https://media.licdn.com/dms/image/C4D03AQHi1VAvIqvgag/profile-displayphoto-shrink_800_800/0/1622817007783?e=1716422400&v=beta&t=SaXMCLfmC0aM5L6re85uvHgyNHmr_LrPR6WZ7SKp7vw"
+                prepend-avatar="https://scontent.frba2-1.fna.fbcdn.net/v/t39.30808-6/406045656_1793154191108159_2378818591530544511_n.jpg?stp=dst-jpg_p526x296&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=eo32MBmbkeAAX-rFnR2&_nc_ht=scontent.frba2-1.fna&oh=00_AfDfrEHZZOWprhuom_tVp4Hwn3RUxQGDbjTlgL8AKIyOnQ&oe=6600297F"
                 subtitle="software engineer" title="Hamza Hdili">
               </v-list-item>
             </v-list>
@@ -34,7 +34,7 @@
 
             <v-list>
               <v-list-item>
-                <v-btn class="w-100" variant="text">Profile</v-btn>
+                <v-btn class="w-100" variant="text" to="/profile/bookmarks">Profile</v-btn>
               </v-list-item>
               <v-list-item>
                 <v-btn class="w-100">Bookmarks</v-btn>
@@ -83,7 +83,7 @@ export default {
     menu: false,
     message: false,
     hints: true,
-    loggedIn: false,
+    loggedIn: true,
   }),
   watch: {
     group() {
