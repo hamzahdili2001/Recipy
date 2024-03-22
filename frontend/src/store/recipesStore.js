@@ -9,6 +9,7 @@ export const useRecipesStore = defineStore("recipes", {
 		loadCount: 12,
 		recipes: [],
 		recipe: {},
+		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
 		apiKey: "API_KEY"
 	}),
 	actions: {
@@ -18,26 +19,41 @@ export const useRecipesStore = defineStore("recipes", {
 		},
 
 		async getRecipes() {
-			try {
-				const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?number=${this
-					.loadCount}&addRecipeInformation=true&apiKey=${this.apiKey}`;
-				const response = await axios.get(apiUrl);
-				this.recipes = response.data.results;
-				console.log(this.recipes[0]);
-			} catch (error) {
-				console.error("Error:", error);
+			const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?number=${this
+				.loadCount}&addRecipeInformation=true&apiKey=${this.apiKey}`;
+
+			if (this.cache[apiUrl]) {
+				this.recipes = this.cache[apiUrl];
+				console.log("Data fetched from cache:", this.cache[apiUrl]);
+			} else {
+				try {
+					const response = await axios.get(apiUrl);
+					this.recipes = response.data.results;
+					this.cache[apiUrl] = this.recipes; // Cache the response data
+					localStorage.setItem("recipeCache", JSON.stringify(this.cache));
+					console.log("Data fetched from API:", this.recipes);
+				} catch (error) {
+					console.error("Error:", error);
+				}
 			}
 		},
 
 		async getRecipeById(recipeId) {
-			try {
-				const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${this
-					.apiKey}`;
-				const response = await axios.get(url);
-				this.recipe = response.data;
-				console.log(this.recipe);
-			} catch (error) {
-				console.error("Error:", error);
+			const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${this
+				.apiKey}`;
+			console.log("Data fetched from cache:", this.cache[url]);
+			if (this.cache[url]) {
+				this.recipe = this.cache[url];
+			} else {
+				try {
+					const response = await axios.get(url);
+					this.recipe = response.data;
+					this.cache[url] = this.recipe;
+					localStorage.setItem("recipeCache", JSON.stringify(this.cache));
+					console.log("Data fetched from API:", this.recipe);
+				} catch (error) {
+					console.error("Error:", error);
+				}
 			}
 		},
 
