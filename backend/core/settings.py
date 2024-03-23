@@ -121,7 +121,7 @@ SIMPLE_JWT = {
     # Access token expires in 15 minutes
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     # Refresh token expires in 1 day
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30)
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "upload")
