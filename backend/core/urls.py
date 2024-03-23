@@ -31,5 +31,5 @@ urlpatterns = [
     path("api/user/login", accounts.views.login),
     path("api/token/refresh", accounts.views.refresh_token),
     path("admin/", admin.site.urls),
-    path("api/auth/", include("rest_framework.urls")),
+    path("api/doc/", include("rest_framework.urls")),
 ]
