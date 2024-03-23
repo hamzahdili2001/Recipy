@@ -33,3 +33,8 @@ class RecipeSerializer(serializers.Serializer):
         Create and return a new `Recipe` instance, given the validated data.
         """
         return Recipe.objects.create(**validated_data)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
