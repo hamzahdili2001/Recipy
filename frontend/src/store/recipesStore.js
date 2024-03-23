@@ -9,6 +9,10 @@ export const useRecipesStore = defineStore("recipes", {
 		loadCount: 12,
 		recipes: [],
 		recipe: {},
+		query: "",
+		cuisine: [],
+		diet: [],
+		intolerances: [],
 		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
 		apiKey: "API_KEY"
 	}),
@@ -54,6 +58,22 @@ export const useRecipesStore = defineStore("recipes", {
 				} catch (error) {
 					console.error("Error:", error);
 				}
+			}
+		},
+		async filtersRecipes() {
+			const url = "https://api.spoonacular.com/recipes/complexSearch";
+			try {
+				const response = await axios.get(url, {
+					params: {
+						apiKey: this.apiKey,
+						cuisine: this.cuisine.join(","),
+						diet: this.diet.join(","),
+						intolerances: this.intolerances.join(",")
+					}
+				});
+				this.filteredRecipes = response.data.results;
+			} catch (error) {
+				console.error("Error fetching recipes:", error);
 			}
 		},
 
