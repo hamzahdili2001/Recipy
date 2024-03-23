@@ -247,7 +247,7 @@ def refresh_token(request: Request):
             RefreshToken.verify(refresh_token)
         except Exception as e:
             return Response({"error": str(e)}, status=st.HTTP_403_FORBIDDEN)
-        return Response({"token": str(refresh_token.access_token)})
+        return Response({"access_token": str(refresh_token.access_token)})
     else:
         errors = {}
         if refresh_token_serializer.errors:
