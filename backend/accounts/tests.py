@@ -1,7 +1,8 @@
+import uuid
 from django.test import TestCase
 from accounts.models import Recipe, User, UserProfile
-import uuid
 from django.contrib.auth.hashers import make_password
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class TestRecipeModel(TestCase):
@@ -130,3 +131,7 @@ class TestUserProfileModel(TestCase):
         )
         profile = UserProfile.objects.create(user=user, picture="test.jpg")
         self.assertEqual(UserProfile.objects.first().picture.name, "test.jpg")
+        
+class TestJWTToken(TestCase):
+    def test_access_token():
+        pass
