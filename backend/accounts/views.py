@@ -9,7 +9,8 @@ from accounts.models import User, UserProfile
 from accounts.serializers import (
     UserSerializer,
     UserProfileSerializer,
-    LoginSerializer
+    LoginSerializer,
+    RefreshTokenSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -181,4 +182,23 @@ def login(request: Request):
         errors = {}
         if login_serializer.errors:
             errors.update(login_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def refresh_token(request: Request):
+    refresh_token_serializer = RefreshTokenSerializer(data=request.data)
+    valid = refresh_token_serializer.is_valid()
+    if valid:
+        try:
+            refresh = refresh_token_serializer.validated_data.get("refresh")
+            refresh_token = RefreshToken(refresh)
+            RefreshToken.verify(refresh_token)
+        except Exception as e:
+            return Response({"error": str(e)}, status=st.HTTP_403_FORBIDDEN)
+        return Response({"token": str(refresh_token.access_token)})
+    else:
+        errors = {}
+        if refresh_token_serializer.errors:
+            errors.update(refresh_token_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)

@@ -38,3 +38,6 @@ class RecipeSerializer(serializers.Serializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
+    
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh = serializers.CharField()

@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/user/update_password/<str:id>", accounts.views.update_password),
     path("api/user/delete/<str:id>", accounts.views.delete_user),
     path("api/user/login", accounts.views.login),
+    path("api/token/refresh", accounts.views.refresh_token),
     path("admin/", admin.site.urls),
     path("api/auth/", include("rest_framework.urls")),
 ]
