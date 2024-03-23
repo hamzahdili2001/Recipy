@@ -8,11 +8,9 @@ import AppFooter from "@/components/AppFooter.vue";
 import AppLogin from "@/components/AppLogin.vue"
 </script>
 <template>
-    <AppNavigationBar />
-    <AppCarousel />
-    <AppPopularCategories />
-    <AppRecipeCards />
-    <AppSubscribe />
-    <AppFooter />
-    <AppLogin />
+  <AppCarousel />
+  <AppPopularCategories />
+  <AppRecipeCards />
+  <AppSubscribe />
+  <AppLogin />
 </template>

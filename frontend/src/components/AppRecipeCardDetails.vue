@@ -1,5 +1,4 @@
 <template>
-  <AppNavigationBar />
   <div>
     <v-card width="70%" class="mx-15 my-15">
       <v-img class="text-white" height="400" :src="recipesStore.recipe.image" cover>
