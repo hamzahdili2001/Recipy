@@ -13,8 +13,9 @@ export const useRecipesStore = defineStore("recipes", {
 		cuisine: [],
 		diet: [],
 		intolerances: [],
+		filteredRecipes: [],
 		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
-		apiKey: "API_KEY"
+		apiKey: "def0bf02a4004fd6b231dd37e331c50a"
 	}),
 	actions: {
 		async loadMoreRecipes() {
@@ -60,17 +61,20 @@ export const useRecipesStore = defineStore("recipes", {
 				}
 			}
 		},
-		async filtersRecipes() {
-			const url = "https://api.spoonacular.com/recipes/complexSearch";
+		async getFilteredRecipes() {
+			const baseUrl = `https://api.spoonacular.com/recipes/complexSearch`;
+			const params = new URLSearchParams({
+				apiKey: this.apiKey,
+				query: this.query,
+				cuisine: this.cuisine.join(","),
+				diet: this.diet.join(","),
+				intolerances: this.intolerances.join(","),
+				addRecipeInformation: true
+			});
+			const url = `${baseUrl}?${params}`;
 			try {
-				const response = await axios.get(url, {
-					params: {
-						apiKey: this.apiKey,
-						cuisine: this.cuisine.join(","),
-						diet: this.diet.join(","),
-						intolerances: this.intolerances.join(",")
-					}
-				});
+				const response = await axios.get(url);
+				console.log(url);
 				this.filteredRecipes = response.data.results;
 			} catch (error) {
 				console.error("Error fetching recipes:", error);
