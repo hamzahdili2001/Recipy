@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-15 my-15">
+  <div class="mx-15 my-15" style="height: 100%;">
     <v-form @submit.prevent="recipeStore.getFilteredRecipes">
       <v-row>
         <v-col cols="12" md="12">

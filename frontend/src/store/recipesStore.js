@@ -15,7 +15,7 @@ export const useRecipesStore = defineStore("recipes", {
 		intolerances: [],
 		filteredRecipes: [],
 		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
-		apiKey: "def0bf02a4004fd6b231dd37e331c50a"
+		apiKey: "API_KEY"
 	}),
 	actions: {
 		async loadMoreRecipes() {

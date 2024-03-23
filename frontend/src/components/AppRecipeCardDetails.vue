@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card width="70%" class="mx-15 my-15">
+    <v-card width="70%" class="mx-auto my-15">
       <v-img class="text-white" height="400" :src="recipesStore.recipe.image" cover>
         <v-card-item class="w-100 h-100" style="background: rgba(0,0,0,0.7)">
           <v-card-title>{{ recipesStore.recipe.title
