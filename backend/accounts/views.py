@@ -1,6 +1,6 @@
-from datetime import datetime
 from accounts.permissions import IsValidJWTAccessToken
 from django.http import Http404
+import mimetypes
 from rest_framework import status as st
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -14,6 +14,7 @@ from accounts.serializers import (
     RefreshTokenSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+import os
 
 
 def get_user_id_from_access_token(request: Request) -> (str | None):
@@ -40,12 +41,18 @@ def user_info(request: Request):
             id=get_user_id_from_access_token(request=request))
     except User.DoesNotExist:
         raise Http404("User does not exist")
+    
+    try:
+        user_picture = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        raise Http404("Profile does not exist")
 
     data = {
         "first_name": user.first_name,
         "last_name": user.last_name,
         "username": user.username,
         "email": user.email,
+        "profil": ("api/user/profil" if user_picture.picture else None),
         "last_login": str(user.last_login)
     }
 
@@ -62,7 +69,7 @@ def signup(request: Request):
     # valid_profile_data = profile_serializer.is_valid()
 
     if valid_user_data:
-        user_instance = user_serializer.save()
+        user_instance: User = user_serializer.save()
         # profile_serializer.save(user=user_instance)
         response_data = {
             "id": user_instance.id,
@@ -159,6 +166,30 @@ def update_password(request: Request):
     return Response({"message": "ok"})
 
 
+@api_view(["GET"])
+@permission_classes([IsValidJWTAccessToken])
+def user_profile(request: Request):
+    """Endpoint to serve user picture"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+        user_profile = UserProfile.objects.get(user=user)
+        picture_path = user_profile.picture.path
+    except (User.DoesNotExist, UserProfile.DoesNotExist):
+        return Response({"error": "User profile picture not found"}, status=st.HTTP_404_NOT_FOUND)
+    
+    if not os.path.exists(picture_path):
+        return Response({"message": None})
+
+    mime_type, _ = mimetypes.guess_type(picture_path)
+    if not mime_type or not mime_type.startswith('image'):
+        return Response({"error": "Unsupported file type"}, status=st.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    with open(picture_path, "rb") as picture_file:
+        response = Response(picture_file.read(), content_type=mime_type)
+        response["Content-Disposition"] = "inline; filename='profile_picture'"
+        return response
+    
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
 @permission_classes([IsValidJWTAccessToken])

@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/user/update_data", accounts.views.update_data),
     path("api/user/update_email", accounts.views.update_email),
     path("api/user/update_picture", accounts.views.update_picture),
+    path("api/user/profil", accounts.views.user_profile, name="get user profil"),
     path("api/user/update_password", accounts.views.update_password),
     path("api/user/delete", accounts.views.delete_user),
     path("api/user/login", accounts.views.login),
