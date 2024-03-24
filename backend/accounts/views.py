@@ -61,6 +61,7 @@ def user_info(request: Request):
 
 
 @api_view(["POST"])
+@parser_classes([JSONParser])
 def signup(request: Request):
     """Create a new user handler"""
     user_serializer = UserSerializer(data=request.data)
