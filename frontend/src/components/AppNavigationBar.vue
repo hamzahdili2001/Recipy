@@ -6,10 +6,10 @@
         style="font-family: 'Smooch', cursive; font-size: 30px; color: #000000;">Recipy
       </h3>
       <v-list class="d-none-md">
-        <v-btn>Home</v-btn>
-        <v-btn>Recipes</v-btn>
-        <v-btn>Categories</v-btn>
-        <v-btn>About</v-btn>
+        <v-btn to="/" link>Home</v-btn>
+        <v-btn to="/recipes">Recipes</v-btn>
+        <v-btn to="/category">Categories</v-btn>
+        <v-btn to="about">About</v-btn>
       </v-list>
       <div>
         <v-btn icon to="/recipes-filter">
@@ -62,10 +62,10 @@
       </v-btn>
     </div>
     <v-divider class="mb-4"></v-divider>
-    <v-list-item class="pa-4" link title="Home"></v-list-item>
-    <v-list-item class="pa-4" link title="Recipes"></v-list-item>
-    <v-list-item class="pa-4" link title="Categories"></v-list-item>
-    <v-list-item class="pa-4" link title="About"></v-list-item>
+    <v-list-item class="pa-4" link to="/" title="Home"></v-list-item>
+    <v-list-item class="pa-4" link to="/recipes" title="Recipes"></v-list-item>
+    <v-list-item class="pa-4" link to="/categories" title="Categories"></v-list-item>
+    <v-list-item class="pa-4" link to="/about" title="About"></v-list-item>
   </v-navigation-drawer>
 </template>
 <script>

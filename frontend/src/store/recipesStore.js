@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import { reactive } from "vue";
 
 export const useRecipesStore = defineStore("recipes", {
 	state: () => ({
@@ -15,7 +14,8 @@ export const useRecipesStore = defineStore("recipes", {
 		intolerances: [],
 		filteredRecipes: [],
 		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
-		apiKey: "API_KEY"
+		apiKey: "API_KEY",
+		baseUrl: "https://api.spoonacular.com"
 	}),
 	actions: {
 		async loadMoreRecipes() {
@@ -24,17 +24,17 @@ export const useRecipesStore = defineStore("recipes", {
 		},
 
 		async getRecipes() {
-			const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?number=${this
+			const url = `${this.baseUrl}/recipes/complexSearch?number=${this
 				.loadCount}&addRecipeInformation=true&apiKey=${this.apiKey}`;
 
-			if (this.cache[apiUrl]) {
-				this.recipes = this.cache[apiUrl];
-				console.log("Data fetched from cache:", this.cache[apiUrl]);
+			if (this.cache[url]) {
+				this.recipes = this.cache[url];
+				console.log("Data fetched from cache:", this.cache[url]);
 			} else {
 				try {
-					const response = await axios.get(apiUrl);
+					const response = await axios.get(url);
 					this.recipes = response.data.results;
-					this.cache[apiUrl] = this.recipes; // Cache the response data
+					this.cache[url] = this.recipes; // Cache the response data
 					localStorage.setItem("recipeCache", JSON.stringify(this.cache));
 					console.log("Data fetched from API:", this.recipes);
 				} catch (error) {
@@ -44,7 +44,7 @@ export const useRecipesStore = defineStore("recipes", {
 		},
 
 		async getRecipeById(recipeId) {
-			const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${this
+			const url = `${this.baseUrl}/recipes/${recipeId}/information?apiKey=${this
 				.apiKey}`;
 			console.log("Data fetched from cache:", this.cache[url]);
 			if (this.cache[url]) {
@@ -62,7 +62,7 @@ export const useRecipesStore = defineStore("recipes", {
 			}
 		},
 		async getFilteredRecipes() {
-			const baseUrl = `https://api.spoonacular.com/recipes/complexSearch`;
+			const searchUrl = `${this.baseUrl}/recipes/complexSearch`;
 			const params = new URLSearchParams({
 				apiKey: this.apiKey,
 				query: this.query,
@@ -71,7 +71,7 @@ export const useRecipesStore = defineStore("recipes", {
 				intolerances: this.intolerances.join(","),
 				addRecipeInformation: true
 			});
-			const url = `${baseUrl}?${params}`;
+			const url = `${searchUrl}?${params}`;
 			try {
 				const response = await axios.get(url);
 				console.log(url);
