@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card width="70%" class="mx-15 my-15">
+    <v-card width="70%" class="mx-auto my-15">
       <v-img class="text-white" height="400" :src="recipesStore.recipe.image" cover>
         <v-card-item class="w-100 h-100" style="background: rgba(0,0,0,0.7)">
           <v-card-title>{{ recipesStore.recipe.title
@@ -8,7 +8,28 @@
           <v-card-subtitle>Ready in {{ recipesStore.recipe.readyInMinutes }} min</v-card-subtitle>
           <v-btn icon="mdi-bookmark" variant="text"></v-btn>
           <v-btn icon="mdi-heart" variant="text"></v-btn>
-          <v-btn icon="mdi-share" variant="text"></v-btn>
+          <div style="display: inline;">
+            <v-btn @click="showInput" icon variant="text">
+              <v-icon>mdi-share</v-icon>
+            </v-btn>
+            <v-dialog v-model="inputVisible" persistent max-width="400px">
+              <v-card>
+                <v-card-title>Copy URL</v-card-title>
+                <v-card-text>
+                  <v-text-field v-model="url" readonly></v-text-field>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn @click="copyUrl" variant="text">
+                    <v-icon>mdi-content-copy</v-icon>
+                    Copy
+                  </v-btn>
+                  <v-btn @click="inputVisible = false" text>
+                    Cancel
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
         </v-card-item>
       </v-img>
       <v-card-text>
@@ -62,7 +83,7 @@
 <script>
 import { useRecipesStore } from "@/store/recipesStore";
 import { useRoute } from "vue-router";
-
+import { ref } from 'vue';
 import AppNavigationBar from "./AppNavigationBar.vue";
 export default {
   components: {
@@ -72,9 +93,30 @@ export default {
     const route = useRoute();
     const recipesStore = useRecipesStore();
     const recipeId = route.params.id;
+    const inputVisible = ref(false);
+    const url = ref(window.location.href);
+
+    const showInput = () => {
+      inputVisible.value = true;
+    };
+
+    const copyUrl = async () => {
+      try {
+        await navigator.clipboard.writeText(url.value);
+        inputVisible.value = false; // Hide the dialog after copying
+        console.log('URL copied to clipboard');
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+      }
+    };
+
     recipesStore.getRecipeById(recipeId);
     return {
-      recipesStore
+      recipesStore,
+      inputVisible,
+      url,
+      showInput,
+      copyUrl
     }
   },
   methods: {
@@ -84,3 +126,15 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.input-container {
+  display: flex;
+  align-items: center;
+}
+
+.input-container input {
+  flex: 1;
+  margin-right: 8px;
+}
+</style>

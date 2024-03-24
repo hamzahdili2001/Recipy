@@ -1,18 +1,18 @@
 <template>
   <v-card rounded="0" flat>
-    <v-toolbar density="compact" color="white" class="py-4 px-15 nav-container" height="0px">
+    <v-toolbar density="compact" color="white" class="py-4 px-15 nav-container" style="min-height: fit-content;">
       <v-app-bar-nav-icon class="d-none d-block-md" @click.stop="drawer = true"></v-app-bar-nav-icon>
       <h3 class=" fs-30 d-none-md font-weight-medium"
         style="font-family: 'Smooch', cursive; font-size: 30px; color: #000000;">Recipy
       </h3>
       <v-list class="d-none-md">
-        <v-btn>Home</v-btn>
-        <v-btn>Recipes</v-btn>
-        <v-btn>Categories</v-btn>
-        <v-btn>About</v-btn>
+        <v-btn to="/" link>Home</v-btn>
+        <v-btn to="/recipes">Recipes</v-btn>
+        <v-btn to="/category">Categories</v-btn>
+        <v-btn to="about">About</v-btn>
       </v-list>
       <div>
-        <v-btn icon>
+        <v-btn icon to="/recipes-filter">
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
         <v-menu v-model="menu" :close-on-content-click="false" location="bottom" v-if="loggedIn">
@@ -62,10 +62,10 @@
       </v-btn>
     </div>
     <v-divider class="mb-4"></v-divider>
-    <v-list-item class="pa-4" link title="Home"></v-list-item>
-    <v-list-item class="pa-4" link title="Recipes"></v-list-item>
-    <v-list-item class="pa-4" link title="Categories"></v-list-item>
-    <v-list-item class="pa-4" link title="About"></v-list-item>
+    <v-list-item class="pa-4" link to="/" title="Home"></v-list-item>
+    <v-list-item class="pa-4" link to="/recipes" title="Recipes"></v-list-item>
+    <v-list-item class="pa-4" link to="/categories" title="Categories"></v-list-item>
+    <v-list-item class="pa-4" link to="/about" title="About"></v-list-item>
   </v-navigation-drawer>
 </template>
 <script>
