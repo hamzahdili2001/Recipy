@@ -34,6 +34,7 @@ def status(request: Request):
 @api_view()
 @permission_classes([IsValidJWTAccessToken])
 def user_info(request: Request):
+    """Get user info handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -53,28 +54,29 @@ def user_info(request: Request):
 
 @api_view(["POST"])
 def signup(request: Request):
+    """Create a new user handler"""
     user_serializer = UserSerializer(data=request.data)
-    profile_serializer = UserProfileSerializer(data=request.data)
+    # profile_serializer = UserProfileSerializer(data=request.data)
 
     valid_user_data = user_serializer.is_valid()
-    valid_profile_data = profile_serializer.is_valid()
+    # valid_profile_data = profile_serializer.is_valid()
 
-    if valid_user_data and valid_profile_data:
+    if valid_user_data:
         user_instance = user_serializer.save()
-        profile_serializer.save(user=user_instance)
+        # profile_serializer.save(user=user_instance)
         response_data = {
             "id": user_instance.id,
             "username": user_instance.username,
             "email": user_instance.email,
-            "profile": profile_serializer.data
+            # "profile": profile_serializer.data
         }
         return Response(response_data, status=st.HTTP_201_CREATED)
     else:
         errors = {}
         if user_serializer.errors:
             errors.update(user_serializer.errors)
-        if profile_serializer.errors:
-            errors.update(profile_serializer.errors)
+        # if profile_serializer.errors:
+        #     errors.update(profile_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)
 
 
@@ -82,6 +84,9 @@ def signup(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_data(request: Request):
+    """
+    Update user data (first_name, last_name, username) handler
+    """
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -106,6 +111,7 @@ def update_data(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_email(request: Request):
+    """Update user email handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -128,6 +134,7 @@ def update_email(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_password(request: Request):
+    """Update user password handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -156,6 +163,7 @@ def update_password(request: Request):
 @parser_classes([MultiPartParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_picture(request: Request):
+    """Update user picture handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -181,6 +189,7 @@ def update_picture(request: Request):
 @api_view(["DELETE"])
 @permission_classes([IsValidJWTAccessToken])
 def delete_user(request: Request):
+    """Delete user handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -238,6 +247,7 @@ def login(request: Request):
 @api_view(["POST"])
 @permission_classes([])
 def refresh_token(request: Request):
+    """Make a new access token from refresh token handler"""
     refresh_token_serializer = RefreshTokenSerializer(data=request.data)
     valid = refresh_token_serializer.is_valid()
     if valid:
