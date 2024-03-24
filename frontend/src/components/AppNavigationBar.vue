@@ -83,7 +83,7 @@ export default {
     menu: false,
     message: false,
     hints: true,
-    loggedIn: true,
+    loggedIn: false,
   }),
   watch: {
     group() {
