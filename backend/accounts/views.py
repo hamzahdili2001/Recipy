@@ -1,5 +1,5 @@
 from accounts.permissions import IsValidJWTAccessToken
-from django.http import Http404
+from django.http import Http404, HttpResponse
 import mimetypes
 from rest_framework import status as st
 from rest_framework.decorators import api_view, parser_classes, permission_classes
@@ -17,7 +17,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 import os
 
 
-def get_user_id_from_access_token(request: Request) -> (str | None):
+def get_user_id_from_access_token(request: Request):
     auth_header = request.headers.get("Authorization")
     token = auth_header.split()[1]
     access_token = AccessToken(token)
@@ -169,7 +169,7 @@ def update_password(request: Request):
 @api_view(["GET"])
 @permission_classes([IsValidJWTAccessToken])
 def user_profile(request: Request):
-    """Endpoint to serve user picture"""
+    """Get user picture handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -186,7 +186,7 @@ def user_profile(request: Request):
         return Response({"error": "Unsupported file type"}, status=st.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     with open(picture_path, "rb") as picture_file:
-        response = Response(picture_file.read(), content_type=mime_type)
+        response = HttpResponse(picture_file.read(), content_type=mime_type)
         response["Content-Disposition"] = "inline; filename='profile_picture'"
         return response
     
@@ -203,9 +203,13 @@ def update_picture(request: Request):
 
     profile_serializer = UserProfileSerializer(data=request.data)
     valid_profile_data = profile_serializer.is_valid()
+    user_profile = UserProfile(user=user)
     if valid_profile_data:
-        user_profile = UserProfile.objects.filter(user=user).get()
-        if user_profile.picture:
+        try:
+            user_profile = UserProfile.objects.filter(user=user).get()
+        except UserProfile.DoesNotExist:
+            pass
+        if user_profile:
             user_profile.picture.delete()
         user_profile.picture = request.data.get("picture")
         user_profile.save()
