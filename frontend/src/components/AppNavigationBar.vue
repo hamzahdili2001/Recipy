@@ -1,6 +1,6 @@
 <template>
   <v-card rounded="0" flat>
-    <v-toolbar density="compact" color="white" class="py-4 px-15 nav-container" height="0px">
+    <v-toolbar density="compact" color="white" class="py-4 px-15 nav-container" style="min-height: fit-content;">
       <v-app-bar-nav-icon class="d-none d-block-md" @click.stop="drawer = true"></v-app-bar-nav-icon>
       <h3 class=" fs-30 d-none-md font-weight-medium"
         style="font-family: 'Smooch', cursive; font-size: 30px; color: #000000;">Recipy
@@ -12,7 +12,7 @@
         <v-btn>About</v-btn>
       </v-list>
       <div>
-        <v-btn icon>
+        <v-btn icon to="/recipes-filter">
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
         <v-menu v-model="menu" :close-on-content-click="false" location="bottom" v-if="loggedIn">

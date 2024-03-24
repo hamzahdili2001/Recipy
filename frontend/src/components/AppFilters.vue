@@ -1,6 +1,6 @@
 <template>
-  <div class="mx-15 my-15" style="height: 100%;">
-    <v-form @submit.prevent="recipeStore.getFilteredRecipes">
+  <div class="mx-15 my-15">
+    <v-form @submit.prevent=" recipeStore.getFilteredRecipes">
       <v-row>
         <v-col cols="12" md="12">
           <v-text-field v-model="recipeStore.query" label="Search Query" variant="outlined"></v-text-field>
