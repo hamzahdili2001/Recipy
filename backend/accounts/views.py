@@ -42,17 +42,18 @@ def user_info(request: Request):
     except User.DoesNotExist:
         raise Http404("User does not exist")
     
+    user_picture = None
     try:
         user_picture = UserProfile.objects.get(user=user)
     except UserProfile.DoesNotExist:
-        raise Http404("Profile does not exist")
+        pass
 
     data = {
         "first_name": user.first_name,
         "last_name": user.last_name,
         "username": user.username,
         "email": user.email,
-        "profil": ("api/user/profil" if user_picture.picture else None),
+        "profil": ("api/user/profil" if user_picture else None),
         "last_login": str(user.last_login)
     }
 
