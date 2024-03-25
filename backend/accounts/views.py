@@ -1,6 +1,6 @@
-from datetime import datetime
 from accounts.permissions import IsValidJWTAccessToken
-from django.http import Http404
+from django.http import Http404, HttpResponse
+import mimetypes
 from rest_framework import status as st
 from rest_framework.decorators import api_view, parser_classes, permission_classes
 from rest_framework.parsers import JSONParser, MultiPartParser
@@ -14,9 +14,10 @@ from accounts.serializers import (
     RefreshTokenSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+import os
 
 
-def get_user_id_from_access_token(request: Request) -> (str | None):
+def get_user_id_from_access_token(request: Request):
     auth_header = request.headers.get("Authorization")
     token = auth_header.split()[1]
     access_token = AccessToken(token)
@@ -34,17 +35,25 @@ def status(request: Request):
 @api_view()
 @permission_classes([IsValidJWTAccessToken])
 def user_info(request: Request):
+    """Get user info handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
     except User.DoesNotExist:
         raise Http404("User does not exist")
+    
+    user_picture = None
+    try:
+        user_picture = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        pass
 
     data = {
         "first_name": user.first_name,
         "last_name": user.last_name,
         "username": user.username,
         "email": user.email,
+        "profil": ("api/user/profil" if user_picture else None),
         "last_login": str(user.last_login)
     }
 
@@ -52,29 +61,31 @@ def user_info(request: Request):
 
 
 @api_view(["POST"])
+@parser_classes([JSONParser])
 def signup(request: Request):
+    """Create a new user handler"""
     user_serializer = UserSerializer(data=request.data)
-    profile_serializer = UserProfileSerializer(data=request.data)
+    # profile_serializer = UserProfileSerializer(data=request.data)
 
     valid_user_data = user_serializer.is_valid()
-    valid_profile_data = profile_serializer.is_valid()
+    # valid_profile_data = profile_serializer.is_valid()
 
-    if valid_user_data and valid_profile_data:
-        user_instance = user_serializer.save()
-        profile_serializer.save(user=user_instance)
+    if valid_user_data:
+        user_instance: User = user_serializer.save()
+        # profile_serializer.save(user=user_instance)
         response_data = {
             "id": user_instance.id,
             "username": user_instance.username,
             "email": user_instance.email,
-            "profile": profile_serializer.data
+            # "profile": profile_serializer.data
         }
         return Response(response_data, status=st.HTTP_201_CREATED)
     else:
         errors = {}
         if user_serializer.errors:
             errors.update(user_serializer.errors)
-        if profile_serializer.errors:
-            errors.update(profile_serializer.errors)
+        # if profile_serializer.errors:
+        #     errors.update(profile_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)
 
 
@@ -82,6 +93,9 @@ def signup(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_data(request: Request):
+    """
+    Update user data (first_name, last_name, username) handler
+    """
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -106,6 +120,7 @@ def update_data(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_email(request: Request):
+    """Update user email handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -128,6 +143,7 @@ def update_email(request: Request):
 @parser_classes([JSONParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_password(request: Request):
+    """Update user password handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -152,10 +168,35 @@ def update_password(request: Request):
     return Response({"message": "ok"})
 
 
+@api_view(["GET"])
+@permission_classes([IsValidJWTAccessToken])
+def user_profile(request: Request):
+    """Get user picture handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+        user_profile = UserProfile.objects.get(user=user)
+        picture_path = user_profile.picture.path
+    except (User.DoesNotExist, UserProfile.DoesNotExist):
+        return Response({"error": "User profile picture not found"}, status=st.HTTP_404_NOT_FOUND)
+    
+    if not os.path.exists(picture_path):
+        return Response({"message": None})
+
+    mime_type, _ = mimetypes.guess_type(picture_path)
+    if not mime_type or not mime_type.startswith('image'):
+        return Response({"error": "Unsupported file type"}, status=st.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    with open(picture_path, "rb") as picture_file:
+        response = HttpResponse(picture_file.read(), content_type=mime_type)
+        response["Content-Disposition"] = "inline; filename='profile_picture'"
+        return response
+    
 @api_view(["PUT"])
 @parser_classes([MultiPartParser])
 @permission_classes([IsValidJWTAccessToken])
 def update_picture(request: Request):
+    """Update user picture handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -164,9 +205,13 @@ def update_picture(request: Request):
 
     profile_serializer = UserProfileSerializer(data=request.data)
     valid_profile_data = profile_serializer.is_valid()
+    user_profile = UserProfile(user=user)
     if valid_profile_data:
-        user_profile = UserProfile.objects.filter(user=user).get()
-        if user_profile.picture:
+        try:
+            user_profile = UserProfile.objects.filter(user=user).get()
+        except UserProfile.DoesNotExist:
+            pass
+        if user_profile:
             user_profile.picture.delete()
         user_profile.picture = request.data.get("picture")
         user_profile.save()
@@ -181,6 +226,7 @@ def update_picture(request: Request):
 @api_view(["DELETE"])
 @permission_classes([IsValidJWTAccessToken])
 def delete_user(request: Request):
+    """Delete user handler"""
     try:
         user = User.objects.get(
             id=get_user_id_from_access_token(request=request))
@@ -238,6 +284,7 @@ def login(request: Request):
 @api_view(["POST"])
 @permission_classes([])
 def refresh_token(request: Request):
+    """Make a new access token from refresh token handler"""
     refresh_token_serializer = RefreshTokenSerializer(data=request.data)
     valid = refresh_token_serializer.is_valid()
     if valid:
