@@ -54,3 +54,6 @@ class LoginSerializer(serializers.Serializer):
 
 class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
+
+class RemoveRecipeBookmarkSerializer(serializers.Serializer):
+    title = serializers.CharField()
