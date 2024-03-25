@@ -10,8 +10,15 @@ from django.contrib.auth.models import AbstractBaseUser, UserManager, Permission
 def upload_to(instance, filename):
     return '/'.join(['images', str(instance.user.username), filename])
 
+class TimeStampMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-class Recipe(models.Model):
+    class Meta:
+        abstract = True
+
+
+class Recipe(TimeStampMixin, models.Model):
     """Recipe model definition"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -21,6 +28,7 @@ class Recipe(models.Model):
 
     class Meta:
         db_table = "recipies"
+        ordering = ["created_at"]
 
 
 class TheUserManager(UserManager):
