@@ -25,6 +25,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ["picture"]
+        
+class RecipeBookmarkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ["title", "category", "description"]
 
 
 class RecipeSerializer(serializers.Serializer):

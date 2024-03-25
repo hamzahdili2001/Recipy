@@ -6,12 +6,13 @@ from rest_framework.decorators import api_view, parser_classes, permission_class
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.request import Request
-from accounts.models import User, UserProfile
+from accounts.models import User, UserProfile, Recipe
 from accounts.serializers import (
     UserSerializer,
     UserProfileSerializer,
     LoginSerializer,
-    RefreshTokenSerializer
+    RefreshTokenSerializer,
+    RecipeBookmarkSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 import os
@@ -299,4 +300,25 @@ def refresh_token(request: Request):
         errors = {}
         if refresh_token_serializer.errors:
             errors.update(refresh_token_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+    
+@api_view(["POST"])
+def store_recipe_as_bookmark(request: Request):
+    """Bookmark recipe handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    recipe_bookmark_serializer = RecipeBookmarkSerializer(data=request.data)
+    valid = recipe_bookmark_serializer.is_valid()
+    if valid:
+        recipe_instance = recipe_bookmark_serializer.save(user=user)
+        user.recipes.add(recipe_instance)
+        user.save()
+        return Response({"message": "ok"})
+    else:
+        errors = {}
+        if recipe_bookmark_serializer.errors:
+            errors.update(recipe_bookmark_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)

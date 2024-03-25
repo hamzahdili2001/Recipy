@@ -2,7 +2,7 @@
 This module is about the models of the app accounts
 """
 import uuid
-from datetime import datetime
+# from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 
@@ -15,9 +15,9 @@ class Recipe(models.Model):
     """Recipe model definition"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, default="")
     category = models.CharField(max_length=255)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
 
     class Meta:
         db_table = "recipies"
@@ -68,6 +68,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     is_staff = models.BooleanField(default=False)
     objects = TheUserManager()
+    # relationships
+    recipes = models.ManyToManyField(Recipe, blank=True)
 
     USERNAME_FIELD = "username"
     EMAIL_FIELD = "email"
@@ -80,5 +82,3 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, primary_key=True)
     picture = models.ImageField(upload_to=upload_to, blank=True, null=True)
-    # relationships
-    recipes = models.ManyToManyField(Recipe, blank=True)
