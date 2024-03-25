@@ -303,6 +303,7 @@ def refresh_token(request: Request):
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)
     
 @api_view(["POST"])
+@permission_classes([IsValidJWTAccessToken])
 def store_recipe_as_bookmark(request: Request):
     """Bookmark recipe handler"""
     try:
