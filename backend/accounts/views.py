@@ -61,6 +61,26 @@ def user_info(request: Request):
 
     return Response(data=data)
 
+@api_view()
+@permission_classes([IsValidJWTAccessToken])
+def user_recipe_bookmark(request: Request):
+    """Get user bookmarked recipes handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    res = []
+    
+    data = {}
+    for recipe in user.recipes.values():
+        for k, v in recipe.items():
+            data[k] = v
+        res.append(data)
+        data = {}
+            
+    return Response({"data": res})
+
 
 @api_view(["POST"])
 @parser_classes([JSONParser])
@@ -324,7 +344,7 @@ def store_recipe_as_bookmark(request: Request):
             user.save()
             return Response({"message": "ok"})
         else:
-            return Response({"error": "Exists"}, status=st.HTTP_409_CONFLICT)
+            return Response({"error": "Recipe already bookmarked by user"}, status=st.HTTP_409_CONFLICT)
     else:
         errors = {}
         if recipe_bookmark_serializer.errors:
