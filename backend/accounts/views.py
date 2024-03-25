@@ -6,12 +6,14 @@ from rest_framework.decorators import api_view, parser_classes, permission_class
 from rest_framework.parsers import JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.request import Request
-from accounts.models import User, UserProfile
+from accounts.models import User, UserProfile, Recipe
 from accounts.serializers import (
     UserSerializer,
     UserProfileSerializer,
     LoginSerializer,
-    RefreshTokenSerializer
+    RefreshTokenSerializer,
+    RecipeBookmarkSerializer,
+    RemoveRecipeBookmarkSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 import os
@@ -58,6 +60,26 @@ def user_info(request: Request):
     }
 
     return Response(data=data)
+
+@api_view()
+@permission_classes([IsValidJWTAccessToken])
+def user_recipe_bookmark(request: Request):
+    """Get user bookmarked recipes handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    res = []
+    
+    data = {}
+    for recipe in user.recipes.values():
+        for k, v in recipe.items():
+            data[k] = v
+        res.append(data)
+        data = {}
+            
+    return Response({"data": res})
 
 
 @api_view(["POST"])
@@ -299,4 +321,63 @@ def refresh_token(request: Request):
         errors = {}
         if refresh_token_serializer.errors:
             errors.update(refresh_token_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+    
+@api_view(["POST"])
+@permission_classes([IsValidJWTAccessToken])
+def store_recipe_as_bookmark(request: Request):
+    """Bookmark recipe handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    recipe_bookmark_serializer = RecipeBookmarkSerializer(data=request.data)
+    valid = recipe_bookmark_serializer.is_valid()
+    if valid:
+        try:
+            recipe_instance = Recipe.objects.get(title=recipe_bookmark_serializer.validated_data.get("title"))
+        except Recipe.DoesNotExist:
+            recipe_instance = recipe_bookmark_serializer.save(user=user)
+        if not user.recipes.contains(recipe_instance):
+            user.recipes.add(recipe_instance)
+            user.save()
+            return Response({"message": "ok"})
+        else:
+            return Response({"error": "Recipe already bookmarked by user"}, status=st.HTTP_409_CONFLICT)
+    else:
+        errors = {}
+        if recipe_bookmark_serializer.errors:
+            errors.update(recipe_bookmark_serializer.errors)
+        return Response(errors, status=st.HTTP_400_BAD_REQUEST)
+    
+@api_view(["PUT"])
+@permission_classes([IsValidJWTAccessToken])
+def remove_recipe_bookmark(request: Request):
+    """Remove recipe bookmark from user bookmarks handler"""
+    try:
+        user = User.objects.get(
+            id=get_user_id_from_access_token(request=request))
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    
+    remove_recipe_bookmark_serializer = RemoveRecipeBookmarkSerializer(data=request.data)
+    valid = remove_recipe_bookmark_serializer.is_valid()
+    if valid:
+        try:
+            recipe_instance = Recipe.objects.get(
+                title=remove_recipe_bookmark_serializer.validated_data.get("title")
+            )
+        except Recipe.DoesNotExist:
+            return Response({"error": "Recipe not found"}, status=st.HTTP_404_NOT_FOUND)
+        
+        if user.recipes.filter(id=recipe_instance.id).exists():
+            user.recipes.remove(recipe_instance)
+            return Response({"message": "Bookmark removed successfully"})
+        else:
+            return Response({"error": "Recipe not bookmarked by the user"}, status=st.HTTP_204_NO_CONTENT)
+    else:
+        errors = {}
+        if remove_recipe_bookmark_serializer.errors:
+            errors.update(remove_recipe_bookmark_serializer.errors)
         return Response(errors, status=st.HTTP_400_BAD_REQUEST)

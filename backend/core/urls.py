@@ -31,6 +31,9 @@ urlpatterns = [
     path("api/user/delete", accounts.views.delete_user),
     path("api/user/login", accounts.views.login),
     path("api/token/refresh", accounts.views.refresh_token),
+    path("api/recipe/bookmark", accounts.views.store_recipe_as_bookmark),
+    path("api/recipe/remove_bookmark", accounts.views.remove_recipe_bookmark),
+    path("api/recipe/get_bookmarks", accounts.views.user_recipe_bookmark),
     path("admin/", admin.site.urls),
     path("api/doc/", include("rest_framework.urls")),
 ]
