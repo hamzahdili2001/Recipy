@@ -355,7 +355,7 @@ def remove_recipe_bookmark(request: Request):
             user.recipes.remove(recipe_instance)
             return Response({"message": "Bookmark removed successfully"})
         else:
-            return Response({"error": "Recipe not bookmarked by the user"}, status=st.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Recipe not bookmarked by the user"}, status=st.HTTP_204_NO_CONTENT)
     else:
         errors = {}
         if remove_recipe_bookmark_serializer.errors:
