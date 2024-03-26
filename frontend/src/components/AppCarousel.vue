@@ -18,6 +18,11 @@
 import { useRecipesStore } from '@/store/recipesStore';
 import { computed } from 'vue';
 export default {
+  data() {
+    return {
+      showArrows: true
+    }
+  },
   setup() {
     const recipeStore = useRecipesStore();
     recipeStore.getRecipes();
@@ -36,7 +41,6 @@ export default {
     return {
       recipeStore,
       recipes,
-      showArrows: true
     };
   },
   mounted() {
