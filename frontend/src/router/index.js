@@ -19,6 +19,7 @@ const router = createRouter({
 			path: "/profile",
 			name: "user-profile",
 			component: ProfileView,
+			meta: { requiresAuth: true },
 			children: [
 				{
 					path: "bookmarks",

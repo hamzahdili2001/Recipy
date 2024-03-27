@@ -14,7 +14,7 @@ export const useRecipesStore = defineStore("recipes", {
 		intolerances: [],
 		filteredRecipes: [],
 		cache: JSON.parse(localStorage.getItem("recipeCache")) || {},
-		apiKey: "API_KEY",
+		apiKey: "f132a26ce4c84c72a2c3020661631a1a",
 		baseUrl: "https://api.spoonacular.com"
 	}),
 	actions: {
