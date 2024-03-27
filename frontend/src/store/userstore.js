@@ -3,40 +3,43 @@ import axios from "axios";
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
-		BackendBaseUrl: "http://127.0.0.1:8000/",
-		isAuthenticated: false,
-		id: null,
-		username: null,
-		email: null,
-		first_name: null,
-		last_name: null,
-		access: null,
-		refresh: null
+		BackendBaseUrl: "http://127.0.0.1:8000",
+		user: {
+			isAuthenticated: false,
+			id: null,
+			username: null,
+			email: null,
+			first_name: null,
+			last_name: null,
+			access: null,
+			refresh: null
+		}
 	}),
 	actions: {
 		initStore() {
 			if (localStorage.getItem("user.access")) {
 				this.user.access = localStorage.getItem("user.access");
 				this.user.refresh = localStorage.getItem("user.refresh");
-				this.user.id = localStorage.getItem("user.id");
+				// this.user.id = localStorage.getItem("user.id");
 				this.user.username = localStorage.getItem("user.username");
 				this.user.email = localStorage.getItem("user.email");
 				this.user.first_name = localStorage.getItem("user.first_name");
 				this.user.last_name = localStorage.getItem("user.last_name");
-				this.user.isAuthenticated = true;
+				this.user.isAuthenticated = localStorage.getItem(
+					"user.isAuthenticated"
+				);
 				this.refreshToken();
 
-				console.log("init user", this.user);
+				console.log("init user", this.user.isAuthenticated);
 			}
 		},
 		setToken(data) {
-			console.log("setToken", data);
-			this.user.access = data.access;
-			this.user.refresh = data.refresh;
+			this.user.access = data.access.token;
+			this.user.refresh = data.refresh.token;
 			this.user.isAuthenticated = true;
 
-			localStorage.setItem("user.access", data.access);
-			localStorage.setItem("user.refresh", data.refresh);
+			localStorage.setItem("user.access", data.access.token);
+			localStorage.setItem("user.refresh", data.refresh.token);
 		},
 
 		removeToken() {
@@ -57,38 +60,31 @@ export const useUserStore = defineStore("user", {
 			localStorage.setItem("user.email", "");
 			localStorage.setItem("user.first_name", "");
 			localStorage.setItem("user.last_name", "");
-			localStorage.setItem("user.is_student", "");
-			localStorage.setItem("user.extra_field", "");
+			localStorage.setItem("user.isAuthenticated", "");
 		},
-		setUserInfo(user) {
-			console.log("setUserInfo", user);
+		setUserInfo(data) {
+			console.log("setUserInfo", data);
 
-			this.user.id = localStorage.setItem("user.id", this.user.id);
-			this.user.username = localStorage.setItem(
-				"user.username",
-				this.user.user_name
-			);
-			this.user.email = localStorage.setItem("user.email", this.user.email);
-			this.user.first_name = localStorage.setItem(
-				"user.first_name",
-				this.user.first_name
-			);
-			this.user.last_name = localStorage.setItem(
-				"user.last_name",
-				this.user.last_name
-			);
+			// this.user.id = localStorage.setItem("user.id", this.user.id);
+			localStorage.setItem("user.username", data.username);
+			localStorage.setItem("user.email", data.email.email);
+			localStorage.setItem("user.first_name", data.first_name);
+			localStorage.setItem("user.last_name", data.last_name);
+			localStorage.setItem("user.isAuthenticated", true);
 		},
+
 		refreshToken() {
 			axios
-				.post("", {
+				.post(this.BackendBaseUrl + "/api/token/refresh", {
 					refresh: this.user.refresh
 				})
 				.then(response => {
-					this.user.access = response.data.access;
+					console.log(response.data);
+					this.user.access = response.data.access_token;
 
-					localStorage.setItem("user.access", response.data.access);
+					localStorage.setItem("user.access", response.data.access_token);
 					axios.defaults.headers.common["Authorization"] =
-						"Bearer " + response.data.access;
+						"Bearer " + response.data.access_token;
 				})
 				.catch(error => {
 					console.log(error);

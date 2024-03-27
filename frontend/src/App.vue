@@ -6,6 +6,7 @@ import AppFooter from './components/AppFooter.vue';
 <template>
   <v-app>
     <AppNavigationBar />
+    <AppLogin />
     <router-view></router-view>
     <AppFooter />
   </v-app>
