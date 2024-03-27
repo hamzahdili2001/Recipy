@@ -103,6 +103,7 @@
 </template>
 <script>
 import { useAppLoginStore } from '@/store/home';
+import { useUserStore } from '@/store/userstore';
 import axios from "axios";
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -110,8 +111,10 @@ import 'vue3-toastify/dist/index.css';
 export default {
   setup() {
     const appStore = useAppLoginStore();
+    const userStore = useUserStore();
     return {
       appStore,
+      userStore,
     }
   },
   data: () => ({
@@ -137,6 +140,9 @@ export default {
     },
     errors: []
   }),
+  mounted() {
+    this.userStore.initStore();
+  },
   methods: {
     async register() {
       this.errors = [];
@@ -228,6 +234,21 @@ export default {
         response = await axios.post('http://127.0.0.1:8000/api/user/login', this.cleanLoginData);
         console.log(response.data); // Handle successful response
         // Redirect or show a success message
+        this.userStore.setToken(response.data);
+
+        const accessToken = this.userStore.user.access;
+
+        const userInfoResponse = await axios.get('http://127.0.0.1:8000/api/user/info', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+
+        console.log(userInfoResponse.data);
+        this.userStore.setUserInfo(userInfoResponse.data);
+        this.appStore.overlay = false;
+        this.userStore.initStore();
+
       } catch (error) {
         const errorMessage = error.response ? error.response.data.error : error.message;
         if (errorMessage) {

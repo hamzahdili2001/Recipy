@@ -49,3 +49,8 @@ body {
     margin-right: 30px !important;
   }
 }
+
+
+..v-overlay-scroll-blocked:not(html) {
+  overflow-y: auto !important;
+}
