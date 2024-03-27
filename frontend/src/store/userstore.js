@@ -11,6 +11,7 @@ export const useUserStore = defineStore("user", {
 			email: null,
 			first_name: null,
 			last_name: null,
+			profile_picture: null,
 			access: null,
 			refresh: null
 		}
@@ -20,7 +21,7 @@ export const useUserStore = defineStore("user", {
 			if (localStorage.getItem("user.access")) {
 				this.user.access = localStorage.getItem("user.access");
 				this.user.refresh = localStorage.getItem("user.refresh");
-				// this.user.id = localStorage.getItem("user.id");
+				this.user.profile_picture = localStorage.getItem("user.profil");
 				this.user.username = localStorage.getItem("user.username");
 				this.user.email = localStorage.getItem("user.email");
 				this.user.first_name = localStorage.getItem("user.first_name");
@@ -30,7 +31,28 @@ export const useUserStore = defineStore("user", {
 				);
 				this.refreshToken();
 
-				console.log("init user", this.user.isAuthenticated);
+				console.log("init user", this.user.profile_picture);
+			}
+		},
+		async fetchUserProfilePicture() {
+			try {
+				const response = await axios.get(
+					"http://127.0.0.1:8000/api/user/profil",
+					{
+						headers: {
+							Authorization: "Bearer " + this.user.access
+						}
+					}
+				);
+				if (response.data && response.data.message) {
+					this.setUserProfileImageUrl(response.data.message); // Update state with profile picture URL
+				} else {
+					// Handle case where no profile picture is available
+					this.setUserProfileImageUrl(null);
+				}
+			} catch (error) {
+				console.error(error); // Log error if any
+				// Handle error
 			}
 		},
 		setToken(data) {
@@ -52,6 +74,7 @@ export const useUserStore = defineStore("user", {
 			this.user.email = null;
 			this.user.first_name = null;
 			this.user.last_name = null;
+			this.user.profile_picture = null;
 			this.user.isAuthenticated = false;
 			localStorage.setItem("user.access", "");
 			localStorage.setItem("user.refresh", "");
@@ -60,6 +83,7 @@ export const useUserStore = defineStore("user", {
 			localStorage.setItem("user.email", "");
 			localStorage.setItem("user.first_name", "");
 			localStorage.setItem("user.last_name", "");
+			localStorage.setItem("user.profil", "");
 			localStorage.setItem("user.isAuthenticated", "");
 		},
 		setUserInfo(data) {
@@ -70,6 +94,7 @@ export const useUserStore = defineStore("user", {
 			localStorage.setItem("user.email", data.email.email);
 			localStorage.setItem("user.first_name", data.first_name);
 			localStorage.setItem("user.last_name", data.last_name);
+			localStorage.setItem("user.profil", data.profil);
 			localStorage.setItem("user.isAuthenticated", true);
 		},
 
@@ -91,5 +116,8 @@ export const useUserStore = defineStore("user", {
 					this.removeToken();
 				});
 		}
+	},
+	getters: {
+		userProfileImageUrl: state => state.userProfileImageUrl
 	}
 });
