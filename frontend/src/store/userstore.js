@@ -44,8 +44,8 @@ export const useUserStore = defineStore("user", {
 						}
 					}
 				);
-				if (response.data && response.data.message) {
-					this.setUserProfileImageUrl(response.data.message); // Update state with profile picture URL
+				if (response.data) {
+					console.log(response.data); // Update state with profile picture URL
 				} else {
 					// Handle case where no profile picture is available
 					this.setUserProfileImageUrl(null);
