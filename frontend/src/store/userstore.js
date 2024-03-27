@@ -41,14 +41,17 @@ export const useUserStore = defineStore("user", {
 					{
 						headers: {
 							Authorization: "Bearer " + this.user.access
-						}
+						},
+            responseType: 'blob'
 					}
 				);
 				if (response.data) {
 					console.log(response.data); // Update state with profile picture URL
+          const urlCreator = window.URL || window.webkitURL;
+          const imageUrl = urlCreator.createObjectURL(response.data);
+          this.user.profile_picture = imageUrl
 				} else {
-					// Handle case where no profile picture is available
-					this.setUserProfileImageUrl(null);
+          this.user.profile_picture = null
 				}
 			} catch (error) {
 				console.error(error); // Log error if any
@@ -118,6 +121,6 @@ export const useUserStore = defineStore("user", {
 		}
 	},
 	getters: {
-		userProfileImageUrl: state => state.userProfileImageUrl
+		userProfileImageUrl: state => state.user.profile_picture
 	}
 });
