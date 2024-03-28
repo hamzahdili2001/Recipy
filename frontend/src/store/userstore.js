@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import router from "@/router/index";
 
 export const useUserStore = defineStore("user", {
 	state: () => ({
@@ -31,7 +32,7 @@ export const useUserStore = defineStore("user", {
 				);
 				this.refreshToken();
 
-				console.log("init user", this.user.profile_picture);
+				console.log("init user", this.userProfileImageUrl);
 			}
 		},
 		async fetchUserProfilePicture() {
@@ -41,14 +42,17 @@ export const useUserStore = defineStore("user", {
 					{
 						headers: {
 							Authorization: "Bearer " + this.user.access
-						}
+						},
+						responseType: "blob"
 					}
 				);
-				if (response.data && response.data.message) {
-					this.setUserProfileImageUrl(response.data.message); // Update state with profile picture URL
+				if (response.data) {
+					console.log(response.data); // Update state with profile picture URL
+					const urlCreator = window.URL || window.webkitURL;
+					const imageUrl = urlCreator.createObjectURL(response.data);
+					this.user.profile_picture = imageUrl;
 				} else {
-					// Handle case where no profile picture is available
-					this.setUserProfileImageUrl(null);
+					this.user.profile_picture = null;
 				}
 			} catch (error) {
 				console.error(error); // Log error if any
@@ -85,6 +89,7 @@ export const useUserStore = defineStore("user", {
 			localStorage.setItem("user.last_name", "");
 			localStorage.setItem("user.profil", "");
 			localStorage.setItem("user.isAuthenticated", "");
+			router.push({ name: "home" });
 		},
 		setUserInfo(data) {
 			console.log("setUserInfo", data);
@@ -118,6 +123,6 @@ export const useUserStore = defineStore("user", {
 		}
 	},
 	getters: {
-		userProfileImageUrl: state => state.userProfileImageUrl
+		userProfileImageUrl: state => state.user.profile_picture
 	}
 });

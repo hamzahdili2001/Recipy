@@ -248,6 +248,7 @@ export default {
         this.userStore.setUserInfo(userInfoResponse.data);
         this.appStore.overlay = false;
         this.userStore.initStore();
+        await this.userStore.fetchUserProfilePicture();
 
       } catch (error) {
         const errorMessage = error.response ? error.response.data.error : error.message;
