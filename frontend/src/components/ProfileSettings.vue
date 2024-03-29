@@ -17,7 +17,7 @@
 
     <div class="mt-4 d-flex justify-center align-center ga-4">
       <v-btn flat elevation="1" min-width="100px" to="/profile/bookmarks">Bookmarks</v-btn>
-      <v-btn flat elevation="1" min-width="100px" to="/profile/posts">Edit Profile</v-btn>
+      <v-btn flat elevation="1" min-width="100px" to="/profile/edit">Edit Profile</v-btn>
 
 
       <v-btn class="bg-red-accent-2" flat elevation="1" min-width="100px">Delete Profile</v-btn>

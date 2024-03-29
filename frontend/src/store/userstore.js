@@ -30,6 +30,7 @@ export const useUserStore = defineStore("user", {
 				this.user.isAuthenticated = localStorage.getItem(
 					"user.isAuthenticated"
 				);
+				this.fetchUserProfilePicture();
 				this.refreshToken();
 
 				console.log("init user", this.userProfileImageUrl);
