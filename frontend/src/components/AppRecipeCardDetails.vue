@@ -1,12 +1,14 @@
 <template>
   <div>
-    <v-card width="70%" class="mx-auto my-15">
+    <v-card width="100%" class="my-15 px-15" flat>
       <v-img class="text-white" height="400" :src="recipesStore.recipe.image" cover>
         <v-card-item class="w-100 h-100" style="background: rgba(0,0,0,0.7)">
           <v-card-title>{{ recipesStore.recipe.title
             }}</v-card-title>
           <v-card-subtitle>Ready in {{ recipesStore.recipe.readyInMinutes }} min</v-card-subtitle>
-          <v-btn icon="mdi-bookmark" variant="text"></v-btn>
+          <v-btn icon @click="isBookmarked ? removeBookmark() : bookmarkRecipe()" variant="text">
+            <v-icon>{{ isBookmarked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}</v-icon>
+          </v-btn>
           <v-btn icon="mdi-heart" variant="text"></v-btn>
           <div style="display: inline;">
             <v-btn @click="showInput" icon variant="text">
@@ -82,9 +84,12 @@
 
 <script>
 import { useRecipesStore } from "@/store/recipesStore";
+import { useUserStore } from "@/store/userstore";
 import { useRoute } from "vue-router";
 import { ref } from 'vue';
 import AppNavigationBar from "./AppNavigationBar.vue";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 export default {
   components: {
     AppNavigationBar,
@@ -92,6 +97,7 @@ export default {
   setup() {
     const route = useRoute();
     const recipesStore = useRecipesStore();
+    const userStore = useUserStore();
     const recipeId = route.params.id;
     const inputVisible = ref(false);
     const url = ref(window.location.href);
@@ -104,9 +110,68 @@ export default {
       try {
         await navigator.clipboard.writeText(url.value);
         inputVisible.value = false; // Hide the dialog after copying
-        console.log('URL copied to clipboard');
+        toast("URL copied to clipboard", {
+          "theme": "colored",
+          "type": "success",
+          "dangerouslyHTMLString": true
+        })
       } catch (err) {
-        console.error('Failed to copy URL:', err);
+        toast("Failed to copy URL", {
+          "theme": "colored",
+          "type": "error",
+          "dangerouslyHTMLString": true
+        })
+      }
+    };
+
+    const isBookmarked = ref(false);
+
+    // Method to bookmark a recipe
+    const bookmarkRecipe = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/recipe/bookmark', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: "Bearer " + userStore.user.access,
+          },
+          body: JSON.stringify({
+            id: "RECIPE-ID",
+            title: "RECIPE-TITLE",
+          }),
+        });
+        if (response.ok) {
+          isBookmarked.value = true;
+          console.log('Recipe bookmarked successfully');
+        } else {
+          console.error('Failed to bookmark recipe:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Failed to bookmark recipe:', error);
+      }
+    };
+
+    // Method to remove a bookmark from a recipe
+    const removeBookmark = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/recipe/remove_bookmark', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: "Bearer " + userStore.user.access,
+          },
+          body: JSON.stringify({
+            id: 0
+          }),
+        });
+        if (response.ok) {
+          isBookmarked.value = false;
+          console.log('Bookmark removed successfully');
+        } else {
+          console.error('Failed to remove bookmark:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Failed to remove bookmark:', error);
       }
     };
 
@@ -116,7 +181,10 @@ export default {
       inputVisible,
       url,
       showInput,
-      copyUrl
+      copyUrl,
+      isBookmarked,
+      bookmarkRecipe,
+      removeBookmark,
     }
   },
   methods: {
