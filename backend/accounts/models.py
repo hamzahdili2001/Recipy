@@ -22,8 +22,7 @@ class Recipe(TimeStampMixin, models.Model):
     """Recipe model definition"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    description = models.CharField(max_length=255, default="")
-    category = models.CharField(max_length=255)
+    recipe_id = models.IntegerField()
     title = models.CharField(max_length=50)
 
     class Meta:

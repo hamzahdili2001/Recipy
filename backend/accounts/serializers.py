@@ -29,7 +29,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class RecipeBookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ["title", "category", "description"]
+        fields = ["title", "recipe_id"]
 
 
 class RecipeSerializer(serializers.Serializer):
@@ -56,4 +56,4 @@ class RefreshTokenSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
 class RemoveRecipeBookmarkSerializer(serializers.Serializer):
-    title = serializers.CharField()
+    recipe_id = serializers.IntegerField()
