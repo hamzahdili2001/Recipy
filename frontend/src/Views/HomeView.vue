@@ -12,5 +12,4 @@ import AppLogin from "@/components/AppLogin.vue"
   <AppPopularCategories />
   <AppRecipeCards />
   <AppSubscribe />
-  <AppLogin />
 </template>

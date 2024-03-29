@@ -8,25 +8,31 @@
       <v-list class="d-none-md">
         <v-btn to="/" link>Home</v-btn>
         <v-btn to="/recipes">Recipes</v-btn>
-        <v-btn to="/category">Categories</v-btn>
-        <v-btn to="about">About</v-btn>
+        <v-btn to="/about">About</v-btn>
       </v-list>
       <div>
         <v-btn icon to="/recipes-filter">
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
-        <v-menu v-model="menu" :close-on-content-click="false" location="bottom" v-if="loggedIn">
+        <v-menu v-model="menu" :close-on-content-click="false" location="bottom" v-if="userStore.user.isAuthenticated">
           <template v-slot:activator="{ props }">
             <v-avatar class="ml-3 cursor-pointer" v-bind="props">
-              <v-img :width="100"
-                src="https://scontent.frba2-1.fna.fbcdn.net/v/t39.30808-6/406045656_1793154191108159_2378818591530544511_n.jpg?stp=dst-jpg_p526x296&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=eo32MBmbkeAAX-rFnR2&_nc_ht=scontent.frba2-1.fna&oh=00_AfDfrEHZZOWprhuom_tVp4Hwn3RUxQGDbjTlgL8AKIyOnQ&oe=6600297F"></v-img>
+              <v-img v-if="userStore.user.profile_picture" :width="100" :src="userStore.user.profile_picture"></v-img>
+              <v-img v-else :width="100"
+                src="https://media.istockphoto.com/id/1214428300/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=vftMdLhldDx9houN4V-g3C9k0xl6YeBcoB_Rk6Trce0="></v-img>
             </v-avatar>
           </template>
           <v-card min-width="300" class="mt-2 mr-4 bg-white">
             <v-list>
               <v-list-item
-                prepend-avatar="https://scontent.frba2-1.fna.fbcdn.net/v/t39.30808-6/406045656_1793154191108159_2378818591530544511_n.jpg?stp=dst-jpg_p526x296&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=eo32MBmbkeAAX-rFnR2&_nc_ht=scontent.frba2-1.fna&oh=00_AfDfrEHZZOWprhuom_tVp4Hwn3RUxQGDbjTlgL8AKIyOnQ&oe=6600297F"
-                subtitle="software engineer" title="Hamza Hdili">
+                :prepend-avatar="userStore.user.profile_picture ? userStore.user.profile_picture : 'https://media.istockphoto.com/id/1214428300/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=vftMdLhldDx9houN4V-g3C9k0xl6YeBcoB_Rk6Trce0='">
+
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ userStore.user.first_name }} {{ userStore.user.last_name }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>{{ userStore.user.username }}</v-list-item-subtitle>
+                </v-list-item-content>
               </v-list-item>
             </v-list>
 
@@ -34,16 +40,16 @@
 
             <v-list>
               <v-list-item>
-                <v-btn class="w-100" variant="text" to="/profile/bookmarks">Profile</v-btn>
+                <v-btn class="w-100" variant="text" to="/profile/">Profile</v-btn>
               </v-list-item>
               <v-list-item>
-                <v-btn class="w-100">Bookmarks</v-btn>
+                <v-btn class="w-100" to="/profile/bookmarks">Bookmarks</v-btn>
               </v-list-item>
             </v-list>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn width='100%' color="red" variant="text">
+              <v-btn width='100%' color="red" variant="text" @click="userStore.removeToken">
                 Logout
               </v-btn>
             </v-card-actions>
@@ -64,17 +70,19 @@
     <v-divider class="mb-4"></v-divider>
     <v-list-item class="pa-4" link to="/" title="Home"></v-list-item>
     <v-list-item class="pa-4" link to="/recipes" title="Recipes"></v-list-item>
-    <v-list-item class="pa-4" link to="/categories" title="Categories"></v-list-item>
     <v-list-item class="pa-4" link to="/about" title="About"></v-list-item>
   </v-navigation-drawer>
 </template>
 <script>
 import { useAppLoginStore } from '@/store/home';
+import { useUserStore } from '@/store/userstore';
 export default {
   setup() {
     const appStore = useAppLoginStore();
+    const userStore = useUserStore();
     return {
       appStore,
+      userStore,
     }
   },
   data: () => ({
@@ -83,7 +91,8 @@ export default {
     menu: false,
     message: false,
     hints: true,
-    loggedIn: false,
+
+
   }),
   watch: {
     group() {

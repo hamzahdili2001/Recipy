@@ -1,8 +1,22 @@
 <script setup>
 import AppNavigationBar from "@/components/AppNavigationBar.vue";
-import ProfileSettings from "@/components/ProfileSettings.vue"
+import ProfileSettings from "@/components/ProfileSettings.vue";
 </script>
 <template>
-    <AppNavigationBar />
-    <ProfileSettings />
+  <ProfileSettings :imageURL="userStore.userProfileImageUrl" />
 </template>
+
+<script>
+import { useUserStore } from "@/store/userstore";
+
+export default {
+  data() {
+    return {
+      userStore: useUserStore(),
+    };
+  },
+  mounted() {
+    this.userStore.fetchUserProfilePicture();
+  },
+};
+</script>

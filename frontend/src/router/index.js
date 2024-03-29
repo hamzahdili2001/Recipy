@@ -6,6 +6,8 @@ import UserProfileEdit from "@/components/UserProfileEdit.vue";
 import { createWebHistory, createRouter } from "vue-router";
 import DetailsView from "@/Views/DetailsView.vue";
 import FiltersView from "@/Views/FiltersView.vue";
+import AppRecipeCards from "@/components/AppRecipeCards.vue";
+import AboutView from "@/Views/AboutView.vue";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -19,6 +21,7 @@ const router = createRouter({
 			path: "/profile",
 			name: "user-profile",
 			component: ProfileView,
+			meta: { requiresAuth: true },
 			children: [
 				{
 					path: "bookmarks",
@@ -46,6 +49,16 @@ const router = createRouter({
 			path: "/recipes-filter",
 			name: "recipes-filter",
 			component: FiltersView
+		},
+		{
+			path: "/recipes",
+			name: "all-recipes",
+			component: AppRecipeCards
+		},
+		{
+			path: "/about",
+			name: "about",
+			component: AboutView
 		}
 	]
 });
