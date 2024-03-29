@@ -336,7 +336,7 @@ def store_recipe_as_bookmark(request: Request):
     valid = recipe_bookmark_serializer.is_valid()
     if valid:
         try:
-            recipe_instance = Recipe.objects.get(title=recipe_bookmark_serializer.validated_data.get("title"))
+            recipe_instance = Recipe.objects.get(recipe_id=recipe_bookmark_serializer.validated_data.get("recipe_id"))
         except Recipe.DoesNotExist:
             recipe_instance = recipe_bookmark_serializer.save(user=user)
         if not user.recipes.contains(recipe_instance):
@@ -366,7 +366,7 @@ def remove_recipe_bookmark(request: Request):
     if valid:
         try:
             recipe_instance = Recipe.objects.get(
-                title=remove_recipe_bookmark_serializer.validated_data.get("title")
+                recipe_id=remove_recipe_bookmark_serializer.validated_data.get("recipe_id")
             )
         except Recipe.DoesNotExist:
             return Response({"error": "Recipe not found"}, status=st.HTTP_404_NOT_FOUND)
