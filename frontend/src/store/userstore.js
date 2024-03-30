@@ -14,7 +14,8 @@ export const useUserStore = defineStore("user", {
 			last_name: null,
 			profile_picture: null,
 			access: null,
-			refresh: null
+			refresh: null,
+			bookmarkedRecipes: {}
 		}
 	}),
 	actions: {
@@ -58,6 +59,31 @@ export const useUserStore = defineStore("user", {
 			} catch (error) {
 				console.error(error); // Log error if any
 				// Handle error
+			}
+		},
+		async fetchBookmarkedRecipes() {
+			try {
+				const response = await fetch(
+					"http://127.0.0.1:8000/api/recipe/get_bookmarks",
+					{
+						method: "GET",
+						headers: {
+							Authorization: "Bearer " + this.user.access // Replace with your JWT token
+						}
+					}
+				);
+				if (response.ok) {
+					const data = await response.json();
+					this.user.bookmarkedRecipes = data.data;
+					console.log("Bookmarked Recipes:", this.user.bookmarkedRecipes);
+				} else {
+					console.error(
+						"Failed to fetch bookmarked recipes:",
+						response.statusText
+					);
+				}
+			} catch (error) {
+				console.error("Failed to fetch bookmarked recipes:", error);
 			}
 		},
 		setToken(data) {
