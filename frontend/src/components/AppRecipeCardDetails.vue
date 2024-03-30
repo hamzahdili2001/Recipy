@@ -6,7 +6,7 @@
           <v-card-title>{{ recipesStore.recipe.title
             }}</v-card-title>
           <v-card-subtitle>Ready in {{ recipesStore.recipe.readyInMinutes }} min</v-card-subtitle>
-          <v-btn icon @click="isBookmarked ? removeBookmark() : bookmarkRecipe()" variant="text">
+          <v-btn icon @click="toggleBookmark()" variant="text">
             <v-icon>{{ isBookmarked ? 'mdi-bookmark' : 'mdi-bookmark-outline' }}</v-icon>
           </v-btn>
           <v-btn icon="mdi-heart" variant="text"></v-btn>
@@ -86,10 +86,12 @@
 import { useRecipesStore } from "@/store/recipesStore";
 import { useUserStore } from "@/store/userstore";
 import { useRoute } from "vue-router";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; // Import onMounted
 import AppNavigationBar from "./AppNavigationBar.vue";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import { getCurrentInstance } from 'vue';
+
 export default {
   components: {
     AppNavigationBar,
@@ -101,6 +103,7 @@ export default {
     const recipeId = route.params.id;
     const inputVisible = ref(false);
     const url = ref(window.location.href);
+    const isBookmarked = ref(false);
 
     const showInput = () => {
       inputVisible.value = true;
@@ -124,9 +127,16 @@ export default {
       }
     };
 
-    const isBookmarked = ref(false);
+    const toggleBookmark = async () => {
+      if (isBookmarked.value) {
+        await removeBookmark();
+        isBookmarked.value = false;
+      } else {
+        await bookmarkRecipe();
+        isBookmarked.value = true;
+      }
+    };
 
-    // Method to bookmark a recipe
     const bookmarkRecipe = async () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/recipe/bookmark', {
@@ -136,13 +146,14 @@ export default {
             Authorization: "Bearer " + userStore.user.access,
           },
           body: JSON.stringify({
-            id: "RECIPE-ID",
-            title: "RECIPE-TITLE",
+            title: recipesStore.recipe.title,
+            recipe_id: recipesStore.recipe.id,
           }),
         });
         if (response.ok) {
-          isBookmarked.value = true;
           console.log('Recipe bookmarked successfully');
+          checkBookmarkStatus();
+
         } else {
           console.error('Failed to bookmark recipe:', response.statusText);
         }
@@ -151,7 +162,6 @@ export default {
       }
     };
 
-    // Method to remove a bookmark from a recipe
     const removeBookmark = async () => {
       try {
         const response = await fetch('http://127.0.0.1:8000/api/recipe/remove_bookmark', {
@@ -161,12 +171,13 @@ export default {
             Authorization: "Bearer " + userStore.user.access,
           },
           body: JSON.stringify({
-            id: 0
+            recipe_id: recipesStore.recipe.id
           }),
         });
         if (response.ok) {
-          isBookmarked.value = false;
           console.log('Bookmark removed successfully');
+          checkBookmarkStatus();
+
         } else {
           console.error('Failed to remove bookmark:', response.statusText);
         }
@@ -175,7 +186,28 @@ export default {
       }
     };
 
+
     recipesStore.getRecipeById(recipeId);
+
+    const checkBookmarkStatus = () => {
+      const bookmarkedRecipes = userStore.user.bookmarkedRecipes;
+      console.log("bookmarkedRecipes detail:", bookmarkedRecipes); // Add this line
+
+      if (Array.isArray(bookmarkedRecipes)) {
+        isBookmarked.value = bookmarkedRecipes.some(recipe => recipe.recipe_id == recipeId);
+        console.log("recipeId", recipeId);
+        console.log(isBookmarked.value);
+      } else {
+        console.error("bookmarkedRecipes is not an array:", bookmarkedRecipes);
+      }
+    };
+
+
+    onMounted(async () => {
+      await userStore.fetchBookmarkedRecipes();
+      checkBookmarkStatus();
+    });
+
     return {
       recipesStore,
       inputVisible,
@@ -185,13 +217,14 @@ export default {
       isBookmarked,
       bookmarkRecipe,
       removeBookmark,
+      toggleBookmark,
     }
   },
   methods: {
     truncateDigits(value) {
       return parseInt(value).toFixed(2);
     }
-  }
+  },
 }
 </script>
 
