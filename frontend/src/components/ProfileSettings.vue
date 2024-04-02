@@ -15,12 +15,12 @@
       <v-list-item-subtitle>{{ userStore.user.username }}</v-list-item-subtitle>
     </v-list-item>
 
-    <div class="mt-4 d-flex justify-center align-center ga-4">
+    <div class="mt-4 d-flex justify-center flex-wrap align-center ga-4">
       <v-btn flat elevation="1" min-width="100px" to="/profile/bookmarks">Bookmarks</v-btn>
       <v-btn flat elevation="1" min-width="100px" to="/profile/edit">Edit Profile</v-btn>
 
 
-      <v-btn class="bg-red-accent-2" flat elevation="1" min-width="100px">Delete Profile</v-btn>
+      <v-btn class="bg-red-accent-2" @click="deleteUser" flat elevation="1" min-width="100px">Delete Profile</v-btn>
     </div>
   </v-card>
 
@@ -61,9 +61,25 @@ export default {
       }
     };
 
+    const deleteUser = () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userStore.user.access}`
+        }
+      };
+      axios.delete(`${userStore.BackendBaseUrl}/api/user/delete`, config)
+        .then(response => {
+          console.log(response.data.message); // Output: "ok"
+        })
+        .catch(error => {
+          console.error('Error deleting user:', error);
+        });
+    }
+
     return {
       userStore,
       handleFileUpload,
+      deleteUser
     };
   },
 };
