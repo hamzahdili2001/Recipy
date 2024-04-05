@@ -8,8 +8,12 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "axios": "^1.6.8",
+    "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "vue": "^3.3.0",
+    "vue-router": "^4.3.0",
+    "vue3-toastify": "^0.2.1",
     "vuetify": "^3.0.0"
   },
   "devDependencies": {

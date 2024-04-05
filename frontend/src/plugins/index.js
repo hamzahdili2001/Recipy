@@ -3,10 +3,19 @@
  *
  * Automatically included in `./src/main.js`
  */
+import vuetify from "./vuetify";
+import { createPinia } from "pinia";
+import router from "@/router/";
+// Create Pinia instance
+const pinia = createPinia();
 
-// Plugins
-import vuetify from './vuetify'
+export function registerPlugins(app) {
+	// Register Vue plugins
+	app.use(vuetify);
 
-export function registerPlugins (app) {
-  app.use(vuetify)
+	// Register Pinia
+	app.use(pinia);
+
+	// Register Vue Router
+	app.use(router);
 }

@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Dancing+Script:wght@400..700&family=Smooch&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Dancing+Script:wght@400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Smooch&display=swap');
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: #FFF;
+}
+
+@media (max-width: 500px) {
+  .mx-15 {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+  }
+
+  .px-15 {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  p {
+    font-size: .8em;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .mx-15 {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+
+  .px-15 {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
+
+
+@media (max-width: 730px) {
+  .px-15 {
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+  }
+
+  .mx-15 {
+    margin-left: 30px !important;
+    margin-right: 30px !important;
+  }
+}
+
+
+..v-overlay-scroll-blocked:not(html) {
+  overflow-y: auto !important;
+}
