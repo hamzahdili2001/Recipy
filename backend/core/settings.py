@@ -25,8 +25,7 @@ SECRET_KEY = "django-insecure-^t-kwy$qepy+f8jv=m=sj*unmua9fq72(2ob4_m$nbbepsujc!
 
 # SECURITY WARNING: don"t run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ["recipy-27zw.onrender.com"]
+ALLOWED_HOSTS = ["recipy-65bb.onrender.com", "35.160.120.126","44.233.151.27","34.211.200.85"]
 
 AUTH_USER_MODEL = "accounts.User"
 # Application definition
