@@ -60,10 +60,12 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    "https://recipy-fontend.onrender.com",
     "https://hamzahdili2001.github.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://recipy-fontend.onrender.com",
     "https://hamzahdili2001.github.io",
 ]
 
