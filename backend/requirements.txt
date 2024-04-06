@@ -13,6 +13,7 @@ pathspec==0.12.1
 pillow==10.2.0
 platformdirs==4.2.0
 PyJWT==2.8.0
+pysqlite3==0.5.2
 pytz==2024.1
 sqlparse==0.4.4
 tomli==2.0.1

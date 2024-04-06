@@ -25,7 +25,12 @@ SECRET_KEY = "django-insecure-^t-kwy$qepy+f8jv=m=sj*unmua9fq72(2ob4_m$nbbepsujc!
 
 # SECURITY WARNING: don"t run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ["recipy-65bb.onrender.com", "35.160.120.126","44.233.151.27","34.211.200.85"]
+ALLOWED_HOSTS = [
+    "recipy-65bb.onrender.com",
+    "35.160.120.126",
+    "44.233.151.27",
+    "34.211.200.85",
+]
 
 AUTH_USER_MODEL = "accounts.User"
 # Application definition
@@ -85,19 +90,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": "recipy",
-        "USER": "root",
-        "PASSWORD": "root",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-        "TEST": {"NAME": "recipy_tests"},
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -131,7 +129,7 @@ SIMPLE_JWT = {
     # Access token expires in 15 minutes
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     # Refresh token expires in 1 day
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=30)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "upload")
