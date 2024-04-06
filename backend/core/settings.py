@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     "35.160.120.126",
     "44.233.151.27",
     "34.211.200.85",
+    "localhost",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
