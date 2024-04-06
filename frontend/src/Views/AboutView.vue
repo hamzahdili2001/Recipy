@@ -71,8 +71,8 @@
           <v-avatar size="100" class="mx-auto">
             <v-img src="https://avatars.githubusercontent.com/u/115190839?v=4" alt="Team Member"></v-img>
           </v-avatar>
-          <h3 class="text-center">Jane Smith</h3>
-          <p class="text-center">He will write his name when he wakes up</p>
+          <h3 class="text-center">Fily Mohamed Sakine</h3>
+          <p class="text-center">Software Engineer</p>
         </v-card>
       </v-col>
     </v-row>
