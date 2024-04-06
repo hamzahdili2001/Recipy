@@ -8,6 +8,7 @@ import DetailsView from "@/Views/DetailsView.vue";
 import FiltersView from "@/Views/FiltersView.vue";
 import AppRecipeCards from "@/components/AppRecipeCards.vue";
 import AboutView from "@/Views/AboutView.vue";
+import NotFoundView from "@/Views/NotFoundView.vue";
 
 const router = createRouter({
 	history: createWebHistory(),
@@ -59,6 +60,11 @@ const router = createRouter({
 			path: "/about",
 			name: "about",
 			component: AboutView
+		},
+		{
+			path: "/:pathMatch(.*)*",
+			name: "NotFound",
+			component: NotFoundView
 		}
 	]
 });

@@ -139,7 +139,7 @@ export default {
 
     const bookmarkRecipe = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/recipe/bookmark', {
+        const response = await fetch(`${userStore.BackendBaseUrl}/api/recipe/bookmark`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ export default {
 
     const removeBookmark = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/recipe/remove_bookmark', {
+        const response = await fetch(`${userStore.BackendBaseUrl}/api/recipe/remove_bookmark`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

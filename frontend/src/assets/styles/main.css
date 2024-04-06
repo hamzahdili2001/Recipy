@@ -51,6 +51,6 @@ body {
 }
 
 
-..v-overlay-scroll-blocked:not(html) {
+.v-overlay-scroll-blocked:not(html) {
   overflow-y: auto !important;
 }
