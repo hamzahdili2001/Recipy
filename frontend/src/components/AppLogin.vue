@@ -231,14 +231,14 @@ export default {
 
       try {
         let response;
-        response = await axios.post('http://127.0.0.1:8000/api/user/login', this.cleanLoginData);
+        response = await axios.post(`${this.userStore.BackendBaseUrl}/api/user/login`, this.cleanLoginData);
         console.log(response.data); // Handle successful response
         // Redirect or show a success message
         this.userStore.setToken(response.data);
 
         const accessToken = this.userStore.user.access;
 
-        const userInfoResponse = await axios.get('http://127.0.0.1:8000/api/user/info', {
+        const userInfoResponse = await axios.get(`${this.userStore.BackendBaseUrl}/api/user/info`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }

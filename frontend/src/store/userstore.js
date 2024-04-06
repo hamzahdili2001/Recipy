@@ -40,7 +40,7 @@ export const useUserStore = defineStore("user", {
 		async fetchUserProfilePicture() {
 			try {
 				const response = await axios.get(
-					"http://127.0.0.1:8000/api/user/profil",
+					`${this.BackendBaseUrl}/api/user/profil`,
 					{
 						headers: {
 							Authorization: "Bearer " + this.user.access
@@ -64,7 +64,7 @@ export const useUserStore = defineStore("user", {
 		async fetchBookmarkedRecipes() {
 			try {
 				const response = await fetch(
-					"http://127.0.0.1:8000/api/recipe/get_bookmarks",
+					`${this.BackendBaseUrl}/api/recipe/get_bookmarks`,
 					{
 						method: "GET",
 						headers: {
