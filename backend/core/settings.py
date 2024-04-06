@@ -55,11 +55,11 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://hamzahdili2001.github.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
+    "https://hamzahdili2001.github.io",
 ]
 
 
