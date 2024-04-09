@@ -91,6 +91,8 @@ export default {
     menu: false,
     message: false,
     hints: true,
+
+
   }),
   watch: {
     group() {
